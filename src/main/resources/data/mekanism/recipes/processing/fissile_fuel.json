@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:fission",
+  "input": {
+    "gas": "mekanism:fissile_fuel",
+    "amount": 1
+  },
+  "output": {
+    "gas": "mekanism:nuclear_waste",
+    "amount": 1
+  },
+  "heat": 1
+}

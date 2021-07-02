@@ -1,0 +1,37 @@
+modLoader="javafml"
+loaderVersion="[36,)"
+license="All rights reserved"
+
+[[mods]]
+modId="fissionrecipe"
+version="1.0.0"
+displayName="Mekanism Fission Recipe"
+logoFile="examplemod.png"
+credits="Thanks for this example mod goes to Java"
+authors="Love, Cheese and small house plants"
+description='''
+Adds recipe support for Mekanism Fission Generator
+
+Code extracted from Sky Farm
+'''
+
+[[dependencies.fissionrecipe]]
+    modId="forge"
+    mandatory=true
+    versionRange="[36,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.fissionrecipe]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.16.5,1.17)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.fissionrecipe]]
+    modId="mekanismgenerators"
+    mandatory=true
+    versionRange="[10,)"
+    ordering="NONE"
+    side="BOTH"

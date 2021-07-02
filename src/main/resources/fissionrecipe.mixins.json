@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "ml.northwestwind.fissionrecipe.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "fissionrecipe.refmap.json",
+  "mixins": [
+    "MixinFissionReactorMultiblockData",
+    "MixinMultiblockData"
+  ],
+  "client": [
+    "MixinGeneratorsJEI"
+  ],
+  "minVersion": "0.8"
+}
