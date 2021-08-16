@@ -3,7 +3,7 @@ A really unique addon for [Mekanism](https://www.curseforge.com/minecraft/mc-mod
 
 ## What?
 With this mod installed, you can add actual recipes for Mekanism's Fission Reactor. Below is an example of converting hydrogen to oxygen with the fission reactor that generates no heat:
-![hydrogen_to_oxygen](https://github.com/North-West-Wind/MekanismFissionRecipe/blob/main/resources/hydrogen.jpg?raw=true)
+![hydrogen_to_oxygen](https://github.com/North-West-Wind/MekanismFissionRecipe/raw/main/resources/hydrogen.jpg)
 
 ## How?
 This mod uses a dirty hack called [Mixins](https://github.com/SpongePowered/Mixin). It changes Mekanism's code at runtime. By creating a new recipe type and forcing the Fission Reactor to accept it, you can now add custom fission recipes to Mekanism.
