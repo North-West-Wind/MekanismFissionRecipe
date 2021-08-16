@@ -1,7 +1,6 @@
 package ml.northwestwind.fissionrecipe.jei;
 
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiInnerScreen;

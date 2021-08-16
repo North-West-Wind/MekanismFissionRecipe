@@ -2,7 +2,10 @@ package ml.northwestwind.fissionrecipe.mixin;
 
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
+import mekanism.api.IContentsListener;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
+import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
@@ -10,25 +13,33 @@ import mekanism.api.inventory.AutomationType;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBuilder;
 import mekanism.common.capabilities.heat.MultiblockHeatCapacitor;
-import mekanism.common.registries.MekanismGases;
+import mekanism.common.lib.multiblock.MultiblockData;
+import mekanism.common.tile.prefab.TileEntityMultiblock;
+import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
-import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
+import ml.northwestwind.fissionrecipe.MekanismFission;
 import ml.northwestwind.fissionrecipe.recipe.FissionRecipe;
-import ml.northwestwind.fissionrecipe.recipe.RecipeStorage;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.client.Minecraft;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiPredicate;
+import java.util.function.Consumer;
+import java.util.function.LongSupplier;
+import java.util.function.Predicate;
 
 @Mixin(value = FissionReactorMultiblockData.class, remap = false)
 public abstract class MixinFissionReactorMultiblockData extends MixinMultiblockData {
@@ -41,23 +52,25 @@ public abstract class MixinFissionReactorMultiblockData extends MixinMultiblockD
     @Shadow public double partialWaste;
     @Shadow public IGasTank wasteTank;
     @Shadow public double lastBurnRate;
-    @Shadow public IGasTank heatedCoolantTank;
-    @Shadow public IGasTank gasCoolantTank;
 
-    @Inject(at = @At("RETURN"), method = "<init>")
-    public void construct(TileEntityFissionReactorCasing tile, CallbackInfo ci) {
-        if (tile.getLevel() == null) return;
-        IRecipeType<FissionRecipe> type = (IRecipeType<FissionRecipe>) Registry.RECIPE_TYPE.get(FissionRecipe.RECIPE_TYPE_ID);
-        if (type == null) return;
-        List<FissionRecipe> recipes = tile.getLevel().isClientSide ? RecipeStorage.getFissionRecipes() : tile.getLevel().getServer().getRecipeManager().getAllRecipesFor(type);
-        this.fuelTank = MultiblockChemicalTankBuilder.GAS.create((FissionReactorMultiblockData) (Object) this, tile,
-                () -> (long)this.fuelAssemblies * 8000L,
-                (stack, automationType) -> automationType != AutomationType.EXTERNAL,
-                (stack, automationType) -> this.isFormed(),
-                (gas) -> recipes.stream().anyMatch(recipe -> recipe.getInput().testType(gas)),
+    @Redirect(at = @At(value = "INVOKE", target = "Lmekanism/common/capabilities/chemical/multiblock/MultiblockChemicalTankBuilder;create(Lmekanism/common/lib/multiblock/MultiblockData;Lmekanism/common/tile/prefab/TileEntityMultiblock;Ljava/util/function/LongSupplier;Ljava/util/function/BiPredicate;Ljava/util/function/BiPredicate;Ljava/util/function/Predicate;Lmekanism/api/chemical/attribute/ChemicalAttributeValidator;Lmekanism/api/IContentsListener;)Lmekanism/api/chemical/IChemicalTank;", ordinal = 0), method = "<init>")
+    public <MULTIBLOCK extends MultiblockData, TANK extends IChemicalTank<Gas, GasStack>> TANK customFuelTank(MultiblockChemicalTankBuilder<Gas, GasStack, TANK> multiblockChemicalTankBuilder, MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile, LongSupplier capacity, BiPredicate<Gas, AutomationType> canExtract, BiPredicate<Gas, AutomationType> canInsert, Predicate<Gas> validator, ChemicalAttributeValidator attributeValidator, IContentsListener listener) {
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        List<FissionRecipe> recipes = server == null ? getRecipesOnClient() : getRecipesOnServer(server);
+        return multiblockChemicalTankBuilder.create(multiblock, tile, capacity, canExtract, canInsert,
+                (gas) -> {
+                    boolean match = recipes.stream().anyMatch(recipe -> recipe.getInput().testType(gas));
+                    //LogManager.getLogger().info("Does {} match input? {}", gas.getRegistryName(), match);
+                    return match;
+                },
                 ChemicalAttributeValidator.ALWAYS_ALLOW, null);
-        this.gasTanks.clear();
-        this.gasTanks.addAll(Arrays.asList(this.fuelTank, this.heatedCoolantTank, this.wasteTank, this.gasCoolantTank));
+    }
+
+    @Redirect(at = @At(value = "INVOKE", target = "Lmekanism/common/capabilities/chemical/multiblock/MultiblockChemicalTankBuilder;create(Lmekanism/common/lib/multiblock/MultiblockData;Lmekanism/common/tile/prefab/TileEntityMultiblock;Ljava/util/function/LongSupplier;Ljava/util/function/BiPredicate;Ljava/util/function/BiPredicate;Ljava/util/function/Predicate;Lmekanism/api/chemical/attribute/ChemicalAttributeValidator;Lmekanism/api/IContentsListener;)Lmekanism/api/chemical/IChemicalTank;", ordinal = 1), method = "<init>")
+    public <MULTIBLOCK extends MultiblockData, TANK extends IChemicalTank<Gas, GasStack>> TANK customWasteTank(MultiblockChemicalTankBuilder<Gas, GasStack, TANK> multiblockChemicalTankBuilder, MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile, LongSupplier capacity, BiPredicate<Gas, AutomationType> canExtract, BiPredicate<Gas, AutomationType> canInsert, Predicate<Gas> validator, ChemicalAttributeValidator attributeValidator, IContentsListener listener) {
+        return multiblockChemicalTankBuilder.create(multiblock, tile, capacity, canExtract, canInsert,
+                (gas) -> true,
+                ChemicalAttributeValidator.ALWAYS_ALLOW, null);
     }
 
     /**
@@ -66,9 +79,7 @@ public abstract class MixinFissionReactorMultiblockData extends MixinMultiblockD
      */
     @Overwrite
     public void burnFuel(World world) {
-        IRecipeType<FissionRecipe> type = (IRecipeType<FissionRecipe>) Registry.RECIPE_TYPE.get(FissionRecipe.RECIPE_TYPE_ID);
-        if (type == null) return;
-        List<FissionRecipe> recipes = this.getWorld().isClientSide ? RecipeStorage.getFissionRecipes() : this.getWorld().getServer().getRecipeManager().getAllRecipesFor(type);
+        List<FissionRecipe> recipes = this.getWorld().isClientSide ? getRecipesOnClient() : getRecipesOnServer(this.getWorld().getServer());
         Optional<FissionRecipe> recipe = recipes.stream().filter(r -> r.getInput().testType(fuelTank.getType())).findFirst();
         if (!recipe.isPresent()) return;
         if (!wasteTank.isEmpty() && !wasteTank.isTypeEqual(recipe.get().getOutputRepresentation().getType())) return;
@@ -87,10 +98,34 @@ public abstract class MixinFissionReactorMultiblockData extends MixinMultiblockD
             wasteToAdd.setAmount(newWaste);
             wasteTank.insert(wasteToAdd, Action.EXECUTE, AutomationType.INTERNAL);
             if (leftoverWaste > 0) {
-                double radioactivity = wasteToAdd.getType().get(GasAttributes.Radiation.class).getRadioactivity();
-                Mekanism.radiationManager.radiate(new Coord4D(this.getBounds().getCenter(), world), leftoverWaste * radioactivity);
+                GasAttributes.Radiation radiation = wasteToAdd.getType().get(GasAttributes.Radiation.class);
+                if (radiation != null) {
+                    double radioactivity = radiation.getRadioactivity();
+                    Mekanism.radiationManager.radiate(new Coord4D(this.getBounds().getCenter(), world), leftoverWaste * radioactivity);
+                }
             }
         }
         this.lastBurnRate = toBurn;
+    }
+
+    @Unique
+    @OnlyIn(Dist.CLIENT)
+    private static List<FissionRecipe> getRecipesOnClient() {
+        return Minecraft.getInstance().getConnection().getRecipeManager().getAllRecipesFor(MekanismFission.RegistryEvent.Recipes.FISSION.getType());
+    }
+
+    @Unique
+    private static List<FissionRecipe> getRecipesOnServer(MinecraftServer server) {
+        return server.getRecipeManager().getAllRecipesFor(MekanismFission.RegistryEvent.Recipes.FISSION.getType());
+    }
+
+    @Redirect(at = @At(value = "INVOKE", target = "Lmekanism/common/util/NBTUtils;setGasStackIfPresent(Lnet/minecraft/nbt/CompoundNBT;Ljava/lang/String;Ljava/util/function/Consumer;)V", ordinal = 0), method = "readUpdateTag")
+    public void setFuelTankGasStack(CompoundNBT nbt, String key, Consumer<GasStack> setter) {
+        NBTUtils.setGasStackIfPresent(nbt, key, (value) -> this.fuelTank.setStackUnchecked(value));
+    }
+
+    @Redirect(at = @At(value = "INVOKE", target = "Lmekanism/common/util/NBTUtils;setGasStackIfPresent(Lnet/minecraft/nbt/CompoundNBT;Ljava/lang/String;Ljava/util/function/Consumer;)V", ordinal = 2), method = "readUpdateTag")
+    public void setWasteTankGasStack(CompoundNBT nbt, String key, Consumer<GasStack> setter) {
+        NBTUtils.setGasStackIfPresent(nbt, key, (value) -> this.wasteTank.setStackUnchecked(value));
     }
 }

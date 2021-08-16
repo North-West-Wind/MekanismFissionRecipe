@@ -5,6 +5,7 @@ import mekanism.api.inventory.IgnoredIInventory;
 import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import mekanism.common.Mekanism;
+import ml.northwestwind.fissionrecipe.MekanismFission;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
@@ -28,7 +29,7 @@ public class FissionRecipe extends GasToGasRecipe {
 
     @Override
     public IRecipeSerializer<?> getSerializer() {
-        return RegistryEvent.Recipes.FISSION.getSerializer();
+        return MekanismFission.RegistryEvent.Recipes.FISSION.getSerializer();
     }
 
     @Override
