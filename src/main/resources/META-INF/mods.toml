@@ -1,14 +1,14 @@
 modLoader="javafml"
 loaderVersion="[36,)"
-license="All rights reserved"
+license="GPLv3"
 
 [[mods]]
 modId="fissionrecipe"
 version="1.0.0"
 displayName="Mekanism Fission Recipe"
-logoFile="examplemod.png"
-credits="Thanks for this example mod goes to Java"
-authors="Love, Cheese and small house plants"
+credits="Thanks to Mekanism for creating amazing contents"
+logoFile="fissionrecipe.png"
+authors="NorthWestWind"
 description='''
 Adds recipe support for Mekanism Fission Generator
 

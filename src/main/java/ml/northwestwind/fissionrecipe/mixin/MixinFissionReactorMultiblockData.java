@@ -58,11 +58,7 @@ public abstract class MixinFissionReactorMultiblockData extends MixinMultiblockD
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         List<FissionRecipe> recipes = server == null ? getRecipesOnClient() : getRecipesOnServer(server);
         return multiblockChemicalTankBuilder.create(multiblock, tile, capacity, canExtract, canInsert,
-                (gas) -> {
-                    boolean match = recipes.stream().anyMatch(recipe -> recipe.getInput().testType(gas));
-                    //LogManager.getLogger().info("Does {} match input? {}", gas.getRegistryName(), match);
-                    return match;
-                },
+                (gas) -> recipes.stream().anyMatch(recipe -> recipe.getInput().testType(gas)),
                 ChemicalAttributeValidator.ALWAYS_ALLOW, null);
     }
 
