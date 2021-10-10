@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:chemical_infusing",
+  "leftInput": {
+    "amount": 1,
+    "gas": "fissionrecipe:pure_plutonium_239"
+  },
+  "rightInput": {
+    "amount": 1,
+    "gas": "mekanism:hydrofluoric_acid"
+  },
+  "output": {
+    "gas": "fissionrecipe:plutonium_difluoride",
+    "amount": 1
+  }
+}

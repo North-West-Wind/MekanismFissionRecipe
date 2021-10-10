@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:centrifuging",
+  "input": {
+    "amount": 1,
+    "gas": "fissionrecipe:plutonium_hexafluoride"
+  },
+  "output": {
+    "gas": "fissionrecipe:fissile_fuel_mk3",
+    "amount": 1
+  }
+}

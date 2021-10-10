@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:centrifuging",
+  "input": {
+    "amount": 10,
+    "gas": "fissionrecipe:decayed_plutonium_239"
+  },
+  "output": {
+    "gas": "fissionrecipe:plutonium_240",
+    "amount": 1
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:activating",
+  "input": {
+    "amount": 3,
+    "gas": "fissionrecipe:decayed_plutonium_239"
+  },
+  "output": {
+    "gas": "mekanism:polonium",
+    "amount": 1
+  }
+}

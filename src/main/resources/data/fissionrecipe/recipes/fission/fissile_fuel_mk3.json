@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:fission",
+  "input": {
+    "gas": "fissionrecipe:fissile_fuel_mk3",
+    "amount": 1
+  },
+  "output": {
+    "gas": "fissionrecipe:decayed_plutonium_241",
+    "amount": 1
+  },
+  "heat": 64
+}

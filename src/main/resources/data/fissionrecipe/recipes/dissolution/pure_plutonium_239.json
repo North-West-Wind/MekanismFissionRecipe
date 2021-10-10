@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:dissolution",
+  "itemInput": {
+    "ingredient": {
+      "item": "mekanism:alloy_infused"
+    }
+  },
+  "gasInput": {
+    "amount": 1,
+    "gas": "mekanism:plutonium"
+  },
+  "output": {
+    "gas": "fissionrecipe:pure_plutonium_239",
+    "amount": 100,
+    "chemicalType": "gas"
+  }
+}

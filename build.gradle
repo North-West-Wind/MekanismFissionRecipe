@@ -16,7 +16,7 @@ apply plugin: 'maven-publish'
 
 version = '1.0.1'
 group = 'ml.northwestwind.fissionrecipe' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = 'fissionrecipe'
+archivesBaseName = 'tiered-fissionrecipe'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(8) // Mojang ships Java 8 to end users, so your mod should target Java 8.
 

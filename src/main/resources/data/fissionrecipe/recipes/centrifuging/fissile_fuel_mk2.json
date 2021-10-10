@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:centrifuging",
+  "input": {
+    "amount": 1,
+    "gas": "fissionrecipe:plutonium_difluoride"
+  },
+  "output": {
+    "gas": "fissionrecipe:fissile_fuel_mk2",
+    "amount": 1
+  }
+}

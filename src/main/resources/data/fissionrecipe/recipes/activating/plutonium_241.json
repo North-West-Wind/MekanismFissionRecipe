@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:activating",
+  "input": {
+    "amount": 5,
+    "gas": "fissionrecipe:pure_plutonium_240"
+  },
+  "output": {
+    "gas": "fissionrecipe:plutonium_241",
+    "amount": 4
+  }
+}

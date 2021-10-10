@@ -1,0 +1,15 @@
+{
+  "gas.mekanism.plutonium": "Plutonium-239",
+  "gas.mekanism.nuclear_waste": "Decayed Uranium-238",
+  "gas.fissionrecipe.pure_plutonium_239": "Pure Plutonium-239",
+  "gas.fissionrecipe.pure_plutonium_240": "Pure Plutonium-240",
+  "gas.fissionrecipe.pure_plutonium_241": "Pure Plutonium-241",
+  "gas.fissionrecipe.plutonium_240": "Plutonium-240",
+  "gas.fissionrecipe.plutonium_241": "Plutonium-241",
+  "gas.fissionrecipe.plutonium_difluoride": "Plutonium Difluoride",
+  "gas.fissionrecipe.plutonium_hexafluoride": "Plutonium Hexafluoride",
+  "gas.fissionrecipe.fissile_fuel_mk2": "Fissile Fuel Mk-II",
+  "gas.fissionrecipe.fissile_fuel_mk3": "Fissile Fuel Mk-III",
+  "gas.fissionrecipe.decayed_plutonium_239": "Decayed Plutonium-239",
+  "gas.fissionrecipe.decayed_plutonium_241": "Decayed Plutonium-241"
+}
