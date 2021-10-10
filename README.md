@@ -29,6 +29,7 @@ You just need to create the recipe like a datapack. Here's how the recipe JSON f
   - Amount: Input amount.
 - Output: Similar to input.
 - Heat: The amount of heat generated. 1 is the amount Fissile Fuel normally creates.
+  - You can also use equations in this field with x as subject. For example, "x*x" will make burning 0.1mB of fuel generate 0.01 heat.
 
 ## Why?
 This is originally implemented in [Sky Farm](https://www.curseforge.com/minecraft/modpacks/sky-farm-1-16), but I feel like this feature has its own potential, so I took it out, and made it a standalone mod.
