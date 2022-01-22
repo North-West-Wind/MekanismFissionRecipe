@@ -44,6 +44,10 @@ public class GasCoolantRecipe extends GasToGasRecipe {
         return Registry.RECIPE_TYPE.get(RECIPE_TYPE_ID);
     }
 
+    public GasStack getOutputRepresentation() {
+        return this.output.copy();
+    }
+
     @Override
     public void write(PacketBuffer buffer) {
         super.write(buffer);

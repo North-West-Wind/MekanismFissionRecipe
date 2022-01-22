@@ -3,7 +3,7 @@ package ml.northwestwind.fissionrecipe.mixin;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.IContentsListener;
-import mekanism.api.chemical.Chemical;
+import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.gas.Gas;
@@ -16,7 +16,6 @@ import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBu
 import mekanism.common.capabilities.fluid.MultiblockFluidTank;
 import mekanism.common.capabilities.heat.MultiblockHeatCapacitor;
 import mekanism.common.lib.multiblock.MultiblockData;
-import mekanism.common.registries.MekanismGases;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
@@ -27,12 +26,9 @@ import ml.northwestwind.fissionrecipe.MekanismFission;
 import ml.northwestwind.fissionrecipe.recipe.FissionRecipe;
 import ml.northwestwind.fissionrecipe.recipe.FluidCoolantRecipe;
 import ml.northwestwind.fissionrecipe.recipe.GasCoolantRecipe;
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import org.spongepowered.asm.mixin.Mixin;
@@ -189,19 +185,19 @@ public abstract class MixinFissionReactorMultiblockData extends MixinMultiblockD
         if (fuelTank.isEmpty()) fissionRecipe = Optional.empty();
         burnRemaining = storedFuel % 1;
         this.heatCapacitor.handleHeat(MekanismGeneratorsConfig.generators.energyPerFissionFuel.get().doubleValue() * recipe.get().getHeat(toBurn));
-        this.partialWaste += toBurn * recipe.get().getOutput(null).getAmount();
+        this.partialWaste += toBurn * recipe.get().getOutputRepresentation().getAmount();
         long newWaste = (long) Math.floor(partialWaste);
         if (newWaste > 0) {
             partialWaste %= 1;
             long leftoverWaste = Math.max(0, newWaste - this.wasteTank.getNeeded());
-            GasStack wasteToAdd = recipe.get().getOutput(null);
+            GasStack wasteToAdd = recipe.get().getOutputRepresentation();
             wasteToAdd.setAmount(newWaste);
             wasteTank.insert(wasteToAdd, Action.EXECUTE, AutomationType.INTERNAL);
             if (leftoverWaste > 0) {
                 GasAttributes.Radiation radiation = wasteToAdd.getType().get(GasAttributes.Radiation.class);
                 if (radiation != null) {
                     double radioactivity = radiation.getRadioactivity();
-                    Mekanism.radiationManager.radiate(new Coord4D(this.getBounds().getCenter(), world), leftoverWaste * radioactivity);
+                    MekanismAPI.getRadiationManager().radiate(new Coord4D(this.getBounds().getCenter(), world), leftoverWaste * radioactivity);
                 }
             }
         }

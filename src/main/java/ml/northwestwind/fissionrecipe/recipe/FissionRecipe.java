@@ -7,7 +7,6 @@ import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import mekanism.common.Mekanism;
 import ml.northwestwind.fissionrecipe.MekanismFission;
 import ml.northwestwind.fissionrecipe.misc.Heat;
-import ml.northwestwind.fissionrecipe.recipe.serializer.FissionRecipeSerializer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
@@ -41,6 +40,10 @@ public class FissionRecipe extends GasToGasRecipe {
         return Registry.RECIPE_TYPE.get(RECIPE_TYPE_ID);
     }
 
+    public GasStack getOutputRepresentation() {
+        return this.output.copy();
+    }
+
     @Override
     public void write(PacketBuffer buffer) {
         super.write(buffer);
@@ -60,5 +63,9 @@ public class FissionRecipe extends GasToGasRecipe {
             e.printStackTrace();
             return 0;
         }
+    }
+
+    public Heat getHeatObject() {
+        return this.heat;
     }
 }
