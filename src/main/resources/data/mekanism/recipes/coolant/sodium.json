@@ -1,0 +1,14 @@
+{
+  "type": "mekanism:fluid_coolant",
+  "input": {
+    "gas": "mekanism:sodium",
+    "amount": 1
+  },
+  "output": {
+    "gas": "mekanism:supedheated_sodium",
+    "amount": 1
+  },
+  "thermalEnthalpy": 5,
+  "conductivity": 1,
+  "efficiency": 1
+}

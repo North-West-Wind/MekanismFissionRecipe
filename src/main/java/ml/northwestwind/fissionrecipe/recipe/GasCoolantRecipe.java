@@ -7,7 +7,6 @@ import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import mekanism.common.Mekanism;
 import ml.northwestwind.fissionrecipe.MekanismFission;
 import ml.northwestwind.fissionrecipe.misc.Heat;
-import ml.northwestwind.fissionrecipe.recipe.serializer.FissionRecipeSerializer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
@@ -17,23 +16,27 @@ import net.minecraft.util.registry.Registry;
 
 import javax.script.ScriptException;
 
-public class FissionRecipe extends GasToGasRecipe {
-    public static final ResourceLocation RECIPE_TYPE_ID = new ResourceLocation(Mekanism.MODID, "fission");
+public class GasCoolantRecipe extends GasToGasRecipe {
+    public static final ResourceLocation RECIPE_TYPE_ID = new ResourceLocation(Mekanism.MODID, "gas_coolant");
+    private final double thermalEnthalpy;
+    private final double conductivity;
     private final Heat heat;
 
-    public FissionRecipe(ResourceLocation id, GasStackIngredient input, GasStack output, Heat heat) {
+    public GasCoolantRecipe(ResourceLocation id, GasStackIngredient input, GasStack output, double thermalEnthalpy, double conductivity, Heat heat) {
         super(id, input, output);
+        this.thermalEnthalpy = thermalEnthalpy;
+        this.conductivity = conductivity;
         this.heat = heat;
     }
 
     @Override
-    public ItemStack assemble(IgnoredIInventory inventory) {
+    public ItemStack assemble(IgnoredIInventory p_77572_1_) {
         return ItemStack.EMPTY;
     }
 
     @Override
     public IRecipeSerializer<?> getSerializer() {
-        return MekanismFission.RegistryEvent.Recipes.FISSION.getSerializer();
+        return MekanismFission.RegistryEvent.Recipes.GAS_COOLANT.getSerializer();
     }
 
     @Override
@@ -44,10 +47,20 @@ public class FissionRecipe extends GasToGasRecipe {
     @Override
     public void write(PacketBuffer buffer) {
         super.write(buffer);
+        buffer.writeDouble(this.thermalEnthalpy);
+        buffer.writeDouble(this.conductivity);
         boolean isEqt = this.heat.isEqt();
         buffer.writeBoolean(isEqt);
         if (isEqt) buffer.writeUtf(this.heat.getEquation());
         else buffer.writeFloat(this.heat.getConstant());
+    }
+
+    public double getThermalEnthalpy() {
+        return thermalEnthalpy;
+    }
+
+    public double getConductivity() {
+        return conductivity;
     }
 
     public double getHeat(double toBurn) {
