@@ -43,7 +43,7 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionReac
     private final GuiGauge<?> wasteTank;
 
     public FissionReactorRecipeCategory(IGuiHelper helper) {
-        super(helper, GeneratorsBlocks.FISSION_REACTOR_CASING.getRegistryName(), GeneratorsLang.FISSION_REACTOR.translate(), createIcon(helper, iconRL), 6, 13, 182, 60);
+        super(helper, FissionRecipe.RECIPE_TYPE_ID, GeneratorsLang.FISSION_REACTOR.translate(), createIcon(helper, iconRL), 6, 13, 182, 60);
         addElement(new GuiInnerScreen(this, 45, 17, 105, 56, () -> Arrays.asList(
                 MekanismLang.STATUS.translate(EnumColor.BRIGHT_GREEN, BooleanStateDisplay.ActiveDisabled.of(true)),
                 GeneratorsLang.GAS_BURN_RATE.translate(1.0),
@@ -71,7 +71,7 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionReac
     }
 
     public void setIngredients(FissionJEIRecipe recipe, IIngredients ingredients) {
-        if (!recipe.isGasCoolant()) {
+        if (recipe.isFluidCoolant()) {
             ingredients.setInputLists(VanillaTypes.FLUID, Collections.singletonList(recipe.getFluidInputs()));
             ingredients.setInputLists(MekanismJEI.TYPE_GAS, Collections.singletonList(recipe.getInput().getRepresentations()));
         } else {
@@ -83,7 +83,7 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionReac
     public void setRecipe(IRecipeLayout recipeLayout, FissionJEIRecipe recipe, @Nonnull IIngredients ingredients) {
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
         int chemicalTankIndex = 0;
-        if (!recipe.isGasCoolant()) {
+        if (recipe.isFluidCoolant()) {
             initFluid(recipeLayout.getFluidStacks(), 0, true, coolantTank, recipe.getFluidInputs());
         } else {
             initChemical(gasStacks, chemicalTankIndex++, true, coolantTank, recipe.getGasInputs());
@@ -95,14 +95,14 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionReac
     }
 
     public static class FissionJEIRecipe extends FissionRecipe {
-        private final boolean gasCoolant;
+        private final boolean fluidCoolant;
         private final List<FluidStack> fluidInputs;
         private final List<GasStack> gasInputs;
         private final GasStack output;
 
         public FissionJEIRecipe(FissionRecipe recipe, GasStack output, List<FluidStack> inputs) {
             super(recipe.getId(), recipe.getInput(), recipe.getOutputRepresentation(), recipe.getHeatObject());
-            this.gasCoolant = false;
+            this.fluidCoolant = true;
             this.fluidInputs = inputs;
             this.gasInputs = null;
             this.output = output;
@@ -110,14 +110,14 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionReac
 
         public FissionJEIRecipe(FissionRecipe recipe, List<GasStack> inputs, GasStack output) {
             super(recipe.getId(), recipe.getInput(), recipe.getOutputRepresentation(), recipe.getHeatObject());
-            this.gasCoolant = true;
+            this.fluidCoolant = false;
             this.fluidInputs = null;
             this.gasInputs = inputs;
             this.output = output;
         }
 
-        public boolean isGasCoolant() {
-            return this.gasCoolant;
+        public boolean isFluidCoolant() {
+            return this.fluidCoolant;
         }
 
         public List<FluidStack> getFluidInputs() {

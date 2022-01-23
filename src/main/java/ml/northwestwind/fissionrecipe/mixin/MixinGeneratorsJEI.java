@@ -13,6 +13,7 @@ import net.minecraft.client.Minecraft;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Mixin(value = GeneratorsJEI.class, remap = false)
@@ -22,8 +23,9 @@ public class MixinGeneratorsJEI {
      */
     @Overwrite
     public void registerRecipes(IRecipeRegistration registry) {
-        for (FluidCoolantRecipe recipe : FissionReactorRecipeCategory.getFluidCoolants()) registry.addRecipes(Minecraft.getInstance().getConnection().getRecipeManager().getAllRecipesFor(MekanismFission.RegistryEvent.Recipes.FISSION.getType()).stream().map(r -> new FissionReactorRecipeCategory.FissionJEIRecipe((FissionRecipe) (Object) r, recipe.getOutputRepresentation(), recipe.getInput().getRepresentations())).collect(Collectors.toList()), FissionRecipe.RECIPE_TYPE_ID);
-        for (GasCoolantRecipe recipe : FissionReactorRecipeCategory.getGasCoolants()) registry.addRecipes(Minecraft.getInstance().getConnection().getRecipeManager().getAllRecipesFor(MekanismFission.RegistryEvent.Recipes.FISSION.getType()).stream().map(r -> new FissionReactorRecipeCategory.FissionJEIRecipe((FissionRecipe) (Object) r, recipe.getInput().getRepresentations(), recipe.getOutputRepresentation())).collect(Collectors.toList()), FissionRecipe.RECIPE_TYPE_ID);
+        List<FissionRecipe> recipes = Minecraft.getInstance().getConnection().getRecipeManager().getAllRecipesFor(MekanismFission.RegistryEvent.Recipes.FISSION.getType());
+        for (FluidCoolantRecipe recipe : FissionReactorRecipeCategory.getFluidCoolants()) registry.addRecipes(recipes.stream().map(r -> new FissionReactorRecipeCategory.FissionJEIRecipe(r, recipe.getOutputRepresentation(), recipe.getInput().getRepresentations())).collect(Collectors.toList()), FissionRecipe.RECIPE_TYPE_ID);
+        for (GasCoolantRecipe recipe : FissionReactorRecipeCategory.getGasCoolants()) registry.addRecipes(recipes.stream().map(r -> new FissionReactorRecipeCategory.FissionJEIRecipe(r, recipe.getInput().getRepresentations(), recipe.getOutputRepresentation())).collect(Collectors.toList()), FissionRecipe.RECIPE_TYPE_ID);
     }
 
     /**

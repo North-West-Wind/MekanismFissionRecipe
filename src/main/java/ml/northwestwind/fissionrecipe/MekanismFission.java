@@ -25,6 +25,8 @@ public class MekanismFission
         @SubscribeEvent
         public static void registerRecipe(final net.minecraftforge.event.RegistryEvent.Register<IRecipeSerializer<?>> event) {
             Recipes.FISSION.register(event.getRegistry());
+            Recipes.FLUID_COOLANT.register(event.getRegistry());
+            Recipes.GAS_COOLANT.register(event.getRegistry());
         }
 
         public static class Recipes<S extends IRecipeSerializer<? extends IRecipe<?>>> {

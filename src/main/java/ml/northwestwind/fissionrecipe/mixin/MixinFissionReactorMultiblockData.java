@@ -173,8 +173,7 @@ public abstract class MixinFissionReactorMultiblockData extends MixinMultiblockD
     @Overwrite
     public void burnFuel(World world) {
         Optional<FissionRecipe> recipe;
-        if (!fissionRecipe.isPresent())
-            fissionRecipe = serverFissionRecipes(this.getWorld().getServer()).stream().filter(r -> r.getInput().testType(fuelTank.getType())).findFirst();
+        if (!fissionRecipe.isPresent()) fissionRecipe = serverFissionRecipes(this.getWorld().getServer()).stream().filter(r -> r.getInput().testType(fuelTank.getType())).findFirst();
         recipe = fissionRecipe;
         if (!recipe.isPresent()) return;
         if (!wasteTank.isEmpty() && !wasteTank.isTypeEqual(recipe.get().getOutputRepresentation().getType())) return;

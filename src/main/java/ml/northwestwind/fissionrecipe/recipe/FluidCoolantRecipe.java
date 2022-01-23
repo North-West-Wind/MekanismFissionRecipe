@@ -43,10 +43,6 @@ public class FluidCoolantRecipe extends MekanismRecipe implements Predicate<Flui
         return this.output;
     }
 
-    public GasStack getOutput(FluidStack input) {
-        return this.output.copy();
-    }
-
     @Override
     public void write(PacketBuffer buffer) {
         this.input.write(buffer);
