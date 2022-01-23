@@ -79,7 +79,7 @@ For all chemical (like sodium) cooling, use this. The following is a sample JSON
 - Type: Always use "mekanism:fluid_coolant" if you are adding a fluid coolant recipe.
 - Input/Output: Refer to Fission Recipe.
 - Efficiency: Refer to Fluid Coolant Recipe.
-- Thermal Enthalpy & Conductivity: This affects how much coolant is heated. The following code snippet shows how it determines the value.
+- Thermal Enthalpy & Conductivity: This affects how much coolant is heated. The [code snippet here](https://github.com/North-West-Wind/MekanismFissionRecipe/blob/6da4e9aeadcbb683f9e17cd4cb87c7de85f2fd73/src/main/java/ml/northwestwind/fissionrecipe/mixin/MixinFissionReactorMultiblockData.java#L150-L152) shows how it determines the value.
 
 ## Why?
 This is originally implemented in [Sky Farm](https://www.curseforge.com/minecraft/modpacks/sky-farm-1-16), but I feel like this feature has its own potential, so I took it out, and made it a standalone mod.
