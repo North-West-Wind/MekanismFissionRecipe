@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:fluid_coolant",
+  "input": {
+    "tag": "forge:water",
+    "amount": 1
+  },
+  "output": {
+    "gas": "mekanism:steam",
+    "amount": 1
+  },
+  "efficiency": 1
+}

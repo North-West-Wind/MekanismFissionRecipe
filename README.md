@@ -31,6 +31,56 @@ You just need to create the recipe like a datapack. Here's how the recipe JSON f
 - Heat: The amount of heat generated. 1 is the amount Fissile Fuel normally creates.
   - You can also use equations in this field with x as subject. For example, "x*x" will make burning 0.1mB of fuel generate 0.01 heat.
 
+With version 1.1.0, users can add coolant recipes. There are 2 types of coolant recipes:
+1. Fluid Coolant Recipe  
+For all fluid (like water) cooling, use this. The following is a sample JSON:
+```json
+{
+  "type": "mekanism:fluid_coolant",
+  "input": {
+    "tag": "forge:water",
+    "amount": 1
+  },
+  "output": {
+    "gas": "mekanism:steam",
+    "amount": 1
+  },
+  "efficiency": 1
+}
+```
+- Type: Always use "mekanism:fluid_coolant" if you are adding a fluid coolant recipe.
+- Input
+  - Fluid/Tag: The fluid to accept. It can be a single fluid type (change `tag` to `fluid`) or a fluid tag (`tag`).
+  - Amount: Input amount.
+- Output: 
+  - Gas: The output gas. If you're making a mod you can add your own gas.
+  - Amount: Output amount.
+- Efficiency: How efficient the cooling is. 1 is the amount water cools. The larger the number, the smaller amount of fluid is required to cool to the same temperature (inverse is taken).
+  - You can also use equations in this field with x as subject. When the recipe is parsed, x will be replaced with its inverse (1/x). For example, "x*x" will require only 1/4 of coolant to cool 2mB/t.
+
+2. Gas Coolant Recipe  
+For all chemical (like sodium) cooling, use this. The following is a sample JSON:
+```json
+{
+  "type": "mekanism:gas_coolant",
+  "input": {
+    "gas": "mekanism:sodium",
+    "amount": 1
+  },
+  "output": {
+    "gas": "mekanism:superheated_sodium",
+    "amount": 1
+  },
+  "thermalEnthalpy": 5,
+  "conductivity": 1,
+  "efficiency": 1
+}
+```
+- Type: Always use "mekanism:fluid_coolant" if you are adding a fluid coolant recipe.
+- Input/Output: Refer to Fission Recipe.
+- Efficiency: Refer to Fluid Coolant Recipe.
+- Thermal Enthalpy & Conductivity: This affects how much coolant is heated. The [code snippet here](https://github.com/North-West-Wind/MekanismFissionRecipe/blob/6da4e9aeadcbb683f9e17cd4cb87c7de85f2fd73/src/main/java/ml/northwestwind/fissionrecipe/mixin/MixinFissionReactorMultiblockData.java#L150-L152) shows how it determines the value.
+
 ## Why?
 This is originally implemented in [Sky Farm](https://www.curseforge.com/minecraft/modpacks/sky-farm-1-16), but I feel like this feature has its own potential, so I took it out, and made it a standalone mod.
 
