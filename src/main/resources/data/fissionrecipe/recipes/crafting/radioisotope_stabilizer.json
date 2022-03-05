@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#P#",
+    "PUP",
+    "#P#"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:pellets/polonium"
+    },
+    "P": {
+      "tag": "forge:pellets/plutonium"
+    },
+    "U": {
+      "tag": "forge:alloys/ultimate"
+    }
+  },
+  "result": {
+    "item": "fissionrecipe:radioisotope_stabilizer",
+    "count": 1
+  }
+}

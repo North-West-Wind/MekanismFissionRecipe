@@ -1,0 +1,25 @@
+{
+  "type": "mekanism:reaction",
+  "itemInput": {
+    "ingredient": {
+      "tag": "forge:alloys/ultimate"
+    }
+  },
+  "fluidInput": {
+    "amount": 1000,
+    "tag": "minecraft:water"
+  },
+  "gasInput": {
+    "amount": 8000,
+    "gas": "fissionrecipe:plutonium_241"
+  },
+  "duration": 100,
+  "itemOutput": {
+    "item": "mekanism:pellet_plutonium",
+    "count": 4
+  },
+  "gasOutput": {
+    "gas": "fissionrecipe:pure_plutonium_241",
+    "amount": 1000
+  }
+}

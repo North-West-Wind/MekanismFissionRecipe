@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:reaction",
+  "itemInput": {
+    "ingredient": {
+      "item": "fissionrecipe:radioisotope_stabilizer"
+    }
+  },
+  "fluidInput": {
+    "amount": 10,
+    "tag": "minecraft:water"
+  },
+  "gasInput": {
+    "amount": 1000,
+    "gas": "fissionrecipe:pure_plutonium_239"
+  },
+  "duration": 10,
+  "gasOutput": {
+    "gas": "fissionrecipe:stable_plutonium_239",
+    "amount": 1000
+  }
+}

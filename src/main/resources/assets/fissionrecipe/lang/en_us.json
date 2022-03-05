@@ -11,5 +11,9 @@
   "gas.fissionrecipe.fissile_fuel_mk2": "Fissile Fuel Mk-II",
   "gas.fissionrecipe.fissile_fuel_mk3": "Fissile Fuel Mk-III",
   "gas.fissionrecipe.decayed_plutonium_239": "Decayed Plutonium-239",
-  "gas.fissionrecipe.decayed_plutonium_241": "Decayed Plutonium-241"
+  "gas.fissionrecipe.decayed_plutonium_241": "Decayed Plutonium-241",
+  "gas.fissionrecipe.stable_plutonium_239": "Stable Plutonium-239",
+  "gas.fissionrecipe.stable_plutonium_241": "Stable Plutonium-241",
+
+  "item.fissionrecipe.radioisotope_stabilizer": "Radioisotope Stabilizer"
 }

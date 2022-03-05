@@ -2,7 +2,7 @@
   "type": "mekanism:chemical_infusing",
   "leftInput": {
     "amount": 1,
-    "gas": "fissionrecipe:pure_plutonium_241"
+    "gas": "fissionrecipe:stable_plutonium_241"
   },
   "rightInput": {
     "amount": 1,

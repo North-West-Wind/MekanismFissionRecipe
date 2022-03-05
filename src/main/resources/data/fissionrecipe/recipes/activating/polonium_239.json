@@ -1,7 +1,7 @@
 {
   "type": "mekanism:activating",
   "input": {
-    "amount": 3,
+    "amount": 5,
     "gas": "fissionrecipe:decayed_plutonium_239"
   },
   "output": {
