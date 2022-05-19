@@ -3,15 +3,15 @@ package ml.northwestwind.fissionrecipe.recipe;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.inventory.IgnoredIInventory;
 import mekanism.api.recipes.MekanismRecipe;
-import mekanism.api.recipes.inputs.FluidStackIngredient;
+import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.common.Mekanism;
 import ml.northwestwind.fissionrecipe.MekanismFission;
 import ml.northwestwind.fissionrecipe.misc.Heat;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.fluids.FluidStack;
 
 import javax.script.ScriptException;
@@ -44,7 +44,7 @@ public class FluidCoolantRecipe extends MekanismRecipe implements Predicate<Flui
     }
 
     @Override
-    public void write(PacketBuffer buffer) {
+    public void write(FriendlyByteBuf buffer) {
         this.input.write(buffer);
         this.output.writeToPacket(buffer);
         boolean isEqt = this.heat.isEqt();
@@ -54,17 +54,22 @@ public class FluidCoolantRecipe extends MekanismRecipe implements Predicate<Flui
     }
 
     @Override
+    public boolean isIncomplete() {
+        return input.hasNoMatchingInstances();
+    }
+
+    @Override
     public ItemStack assemble(IgnoredIInventory p_77572_1_) {
         return ItemStack.EMPTY;
     }
 
     @Override
-    public IRecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<?> getSerializer() {
         return MekanismFission.RegistryEvent.Recipes.FLUID_COOLANT.getSerializer();
     }
 
     @Override
-    public IRecipeType<?> getType() {
+    public RecipeType<?> getType() {
         return MekanismFission.RegistryEvent.Recipes.FLUID_COOLANT.getType();
     }
 

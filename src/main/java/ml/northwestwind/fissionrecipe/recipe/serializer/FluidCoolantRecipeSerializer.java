@@ -6,25 +6,26 @@ import com.google.gson.JsonSyntaxException;
 import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.recipes.inputs.FluidStackIngredient;
+import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import ml.northwestwind.fissionrecipe.misc.Heat;
 import ml.northwestwind.fissionrecipe.recipe.FluidCoolantRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 import javax.script.ScriptException;
 
-public class FluidCoolantRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<FluidCoolantRecipe> {
+public class FluidCoolantRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<FluidCoolantRecipe> {
     @Override
     public FluidCoolantRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
-        JsonElement input = JSONUtils.isArrayNode(json, JsonConstants.INPUT) ? JSONUtils.getAsJsonArray(json, JsonConstants.INPUT) :
-                JSONUtils.getAsJsonObject(json, JsonConstants.INPUT);
-        FluidStackIngredient inputIngredient = FluidStackIngredient.deserialize(input);
+        JsonElement input = GsonHelper.isArrayNode(json, JsonConstants.INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.INPUT) :
+                GsonHelper.getAsJsonObject(json, JsonConstants.INPUT);
+        FluidStackIngredient inputIngredient = IngredientCreatorAccess.fluid().deserialize(input);
         GasStack output = SerializerHelper.getGasStack(json, JsonConstants.OUTPUT);
         JsonElement heatObj = json.get("efficiency");
         boolean isEqt = false;
@@ -49,9 +50,9 @@ public class FluidCoolantRecipeSerializer extends ForgeRegistryEntry<IRecipeSeri
 
     @Nullable
     @Override
-    public FluidCoolantRecipe fromNetwork(ResourceLocation recipeId, PacketBuffer buffer) {
+    public FluidCoolantRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
         try {
-            FluidStackIngredient inputIngredient = FluidStackIngredient.read(buffer);
+            FluidStackIngredient inputIngredient = IngredientCreatorAccess.fluid().read(buffer);
             GasStack output = GasStack.readFromPacket(buffer);
             boolean isEqt = buffer.readBoolean();
             Heat heat = new Heat(isEqt, isEqt ? 0 : buffer.readFloat(), isEqt ? buffer.readUtf() : null);
@@ -63,7 +64,7 @@ public class FluidCoolantRecipeSerializer extends ForgeRegistryEntry<IRecipeSeri
     }
 
     @Override
-    public void toNetwork(PacketBuffer buffer, FluidCoolantRecipe recipe) {
+    public void toNetwork(FriendlyByteBuf buffer, FluidCoolantRecipe recipe) {
         try {
             recipe.write(buffer);
         } catch (Exception e) {

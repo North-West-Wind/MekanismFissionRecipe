@@ -3,24 +3,26 @@ package ml.northwestwind.fissionrecipe.recipe;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.inventory.IgnoredIInventory;
 import mekanism.api.recipes.GasToGasRecipe;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
+import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.Mekanism;
 import ml.northwestwind.fissionrecipe.MekanismFission;
+import ml.northwestwind.fissionrecipe.jei.FissionReactorRecipeCategory;
 import ml.northwestwind.fissionrecipe.misc.Heat;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 
 import javax.script.ScriptException;
 
 public class FissionRecipe extends GasToGasRecipe {
-    public static final ResourceLocation RECIPE_TYPE_ID = new ResourceLocation(Mekanism.MODID, "fission");
+    public static final MekanismJEIRecipeType<FissionReactorRecipeCategory.FissionJEIRecipe> RECIPE_TYPE = new MekanismJEIRecipeType<>(Mekanism.rl("fission"), FissionReactorRecipeCategory.FissionJEIRecipe.class);
     private final Heat heat;
 
-    public FissionRecipe(ResourceLocation id, GasStackIngredient input, GasStack output, Heat heat) {
+    public FissionRecipe(ResourceLocation id, ChemicalStackIngredient.GasStackIngredient input, GasStack output, Heat heat) {
         super(id, input, output);
         this.heat = heat;
     }
@@ -31,13 +33,13 @@ public class FissionRecipe extends GasToGasRecipe {
     }
 
     @Override
-    public IRecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<?> getSerializer() {
         return MekanismFission.RegistryEvent.Recipes.FISSION.getSerializer();
     }
 
     @Override
-    public IRecipeType<?> getType() {
-        return Registry.RECIPE_TYPE.get(RECIPE_TYPE_ID);
+    public RecipeType<?> getType() {
+        return Registry.RECIPE_TYPE.get(RECIPE_TYPE.uid());
     }
 
     public GasStack getOutputRepresentation() {
@@ -45,7 +47,7 @@ public class FissionRecipe extends GasToGasRecipe {
     }
 
     @Override
-    public void write(PacketBuffer buffer) {
+    public void write(FriendlyByteBuf buffer) {
         super.write(buffer);
         boolean isEqt = this.heat.isEqt();
         buffer.writeBoolean(isEqt);

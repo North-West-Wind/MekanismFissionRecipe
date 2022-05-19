@@ -3,16 +3,16 @@ package ml.northwestwind.fissionrecipe.recipe;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.inventory.IgnoredIInventory;
 import mekanism.api.recipes.GasToGasRecipe;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.common.Mekanism;
 import ml.northwestwind.fissionrecipe.MekanismFission;
 import ml.northwestwind.fissionrecipe.misc.Heat;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 
 import javax.script.ScriptException;
 
@@ -22,7 +22,7 @@ public class GasCoolantRecipe extends GasToGasRecipe {
     private final double conductivity;
     private final Heat heat;
 
-    public GasCoolantRecipe(ResourceLocation id, GasStackIngredient input, GasStack output, double thermalEnthalpy, double conductivity, Heat heat) {
+    public GasCoolantRecipe(ResourceLocation id, ChemicalStackIngredient.GasStackIngredient input, GasStack output, double thermalEnthalpy, double conductivity, Heat heat) {
         super(id, input, output);
         this.thermalEnthalpy = thermalEnthalpy;
         this.conductivity = conductivity;
@@ -35,12 +35,12 @@ public class GasCoolantRecipe extends GasToGasRecipe {
     }
 
     @Override
-    public IRecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<?> getSerializer() {
         return MekanismFission.RegistryEvent.Recipes.GAS_COOLANT.getSerializer();
     }
 
     @Override
-    public IRecipeType<?> getType() {
+    public RecipeType<?> getType() {
         return Registry.RECIPE_TYPE.get(RECIPE_TYPE_ID);
     }
 
@@ -49,7 +49,7 @@ public class GasCoolantRecipe extends GasToGasRecipe {
     }
 
     @Override
-    public void write(PacketBuffer buffer) {
+    public void write(FriendlyByteBuf buffer) {
         super.write(buffer);
         buffer.writeDouble(this.thermalEnthalpy);
         buffer.writeDouble(this.conductivity);
