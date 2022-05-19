@@ -16,26 +16,24 @@ import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.text.BooleanStateDisplay;
 import mekanism.common.util.text.TextUtils;
 import mekanism.generators.common.GeneratorsLang;
-import mekanism.generators.common.registries.GeneratorsBlocks;
-import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 import ml.northwestwind.fissionrecipe.MekanismFission;
 import ml.northwestwind.fissionrecipe.recipe.FissionRecipe;
 import ml.northwestwind.fissionrecipe.recipe.FluidCoolantRecipe;
 import ml.northwestwind.fissionrecipe.recipe.GasCoolantRecipe;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 
-import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionReactorRecipeCategory.FissionJEIRecipe> {
+
     private static final ResourceLocation iconRL = MekanismUtils.getResource(MekanismUtils.ResourceType.GUI, "radioactive.png");
     private final GuiGauge<?> coolantTank;
     private final GuiGauge<?> fuelTank;
@@ -43,7 +41,7 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionReac
     private final GuiGauge<?> wasteTank;
 
     public FissionReactorRecipeCategory(IGuiHelper helper) {
-        super(helper, FissionRecipe.RECIPE_TYPE_ID, GeneratorsLang.FISSION_REACTOR.translate(), createIcon(helper, iconRL), 6, 13, 182, 60);
+        super(helper, FissionRecipe.RECIPE_TYPE, GeneratorsLang.FISSION_REACTOR.translate(), createIcon(helper, iconRL), 6, 13, 182, 60);
         addElement(new GuiInnerScreen(this, 45, 17, 105, 56, () -> Arrays.asList(
                 MekanismLang.STATUS.translate(EnumColor.BRIGHT_GREEN, BooleanStateDisplay.ActiveDisabled.of(true)),
                 GeneratorsLang.GAS_BURN_RATE.translate(1.0),
@@ -65,33 +63,16 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionReac
         return Minecraft.getInstance().getConnection().getRecipeManager().getAllRecipesFor(MekanismFission.RegistryEvent.Recipes.GAS_COOLANT.getType());
     }
 
-    @Nonnull
-    public Class<? extends FissionJEIRecipe> getRecipeClass() {
-        return FissionJEIRecipe.class;
-    }
-
-    public void setIngredients(FissionJEIRecipe recipe, IIngredients ingredients) {
+    public void setRecipe(IRecipeLayoutBuilder builder, FissionJEIRecipe recipe, IFocusGroup focuses) {
         if (recipe.isFluidCoolant()) {
-            ingredients.setInputLists(VanillaTypes.FLUID, Collections.singletonList(recipe.getFluidInputs()));
-            ingredients.setInputLists(MekanismJEI.TYPE_GAS, Collections.singletonList(recipe.getInput().getRepresentations()));
+            initFluid(builder, RecipeIngredientRole.INPUT, coolantTank, recipe.getFluidInputs());
         } else {
-            ingredients.setInputLists(MekanismJEI.TYPE_GAS, Arrays.asList(recipe.getGasInputs(), recipe.getInput().getRepresentations()));
-        }
-        ingredients.setOutputs(MekanismJEI.TYPE_GAS, Arrays.asList(recipe.getOutput(), recipe.getOutputRepresentation()));
-    }
-
-    public void setRecipe(IRecipeLayout recipeLayout, FissionJEIRecipe recipe, @Nonnull IIngredients ingredients) {
-        IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
-        int chemicalTankIndex = 0;
-        if (recipe.isFluidCoolant()) {
-            initFluid(recipeLayout.getFluidStacks(), 0, true, coolantTank, recipe.getFluidInputs());
-        } else {
-            initChemical(gasStacks, chemicalTankIndex++, true, coolantTank, recipe.getGasInputs());
+            initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, coolantTank, recipe.getGasInputs());
         }
         GasStack output = recipe.getOutput();
-        initChemical(gasStacks, chemicalTankIndex++, true, fuelTank, recipe.getInput().getRepresentations());
-        initChemical(gasStacks, chemicalTankIndex++, false, heatedCoolantTank, Collections.singletonList(output));
-        initChemical(gasStacks, chemicalTankIndex, false, wasteTank, Collections.singletonList(recipe.getOutputRepresentation()));
+        initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, fuelTank, recipe.getInput().getRepresentations());
+        initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, heatedCoolantTank, Collections.singletonList(output));
+        initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, wasteTank, Collections.singletonList(recipe.getOutputRepresentation()));
     }
 
     public static class FissionJEIRecipe extends FissionRecipe {

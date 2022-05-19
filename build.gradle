@@ -14,19 +14,19 @@ apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.1.0'
+version = '2.0.0'
 group = 'ml.northwestwind.fissionrecipe' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'fissionrecipe'
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(8) // Mojang ships Java 8 to end users, so your mod should target Java 8.
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {
-    mappings channel: 'official', version: '1.16.5'
+    mappings channel: 'official', version: '1.18.2'
     runs {
         client {
             workingDirectory project.file('run')
-            arg "-mixin.config=fissionrecipe.mixins.json"
+            arg '-Dmixin.debug.export=true'
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
 
@@ -80,8 +80,8 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.5-36.2.23'
-    annotationProcessor "org.spongepowered:mixin:0.8.2:processor"
+    minecraft 'net.minecraftforge:forge:1.18.2-40.1.20'
+    annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
 
     compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api")
     runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
@@ -92,7 +92,7 @@ dependencies {
 
 jar {
     manifest {
-        classifier = "1.16.5"
+        classifier = "1.18.2"
         attributes([
             "Specification-Title": "fissionrecipe",
             "Specification-Vendor": "fissionrecipe",
@@ -123,4 +123,6 @@ publishing {
 
 mixin {
     add sourceSets.main, "fissionrecipe.refmap.json"
+
+    config "fissionrecipe.mixins.json"
 }

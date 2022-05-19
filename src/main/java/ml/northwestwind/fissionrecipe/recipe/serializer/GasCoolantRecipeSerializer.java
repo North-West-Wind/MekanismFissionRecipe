@@ -6,25 +6,26 @@ import com.google.gson.JsonSyntaxException;
 import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
+import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import ml.northwestwind.fissionrecipe.misc.Heat;
 import ml.northwestwind.fissionrecipe.recipe.GasCoolantRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 import javax.script.ScriptException;
 
-public class GasCoolantRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<GasCoolantRecipe> {
+public class GasCoolantRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<GasCoolantRecipe> {
     @Override
     public GasCoolantRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
-        JsonElement input = JSONUtils.isArrayNode(json, JsonConstants.INPUT) ? JSONUtils.getAsJsonArray(json, JsonConstants.INPUT) :
-                JSONUtils.getAsJsonObject(json, JsonConstants.INPUT);
-        GasStackIngredient inputIngredient = GasStackIngredient.deserialize(input);
+        JsonElement input = GsonHelper.isArrayNode(json, JsonConstants.INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.INPUT) :
+                GsonHelper.getAsJsonObject(json, JsonConstants.INPUT);
+        ChemicalStackIngredient.GasStackIngredient inputIngredient = IngredientCreatorAccess.gas().deserialize(input);
         GasStack output = SerializerHelper.getGasStack(json, JsonConstants.OUTPUT);
         double thermalEnthalpy = json.get("thermalEnthalpy").getAsDouble();
         double conductivity = json.get("conductivity").getAsDouble();
@@ -51,9 +52,9 @@ public class GasCoolantRecipeSerializer extends ForgeRegistryEntry<IRecipeSerial
 
     @Nullable
     @Override
-    public GasCoolantRecipe fromNetwork(ResourceLocation recipeId, PacketBuffer buffer) {
+    public GasCoolantRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
         try {
-            GasStackIngredient inputIngredient = GasStackIngredient.read(buffer);
+            ChemicalStackIngredient.GasStackIngredient inputIngredient = IngredientCreatorAccess.gas().read(buffer);
             GasStack output = GasStack.readFromPacket(buffer);
             double thermalEnthalpy = buffer.readDouble();
             double conductivity = buffer.readDouble();
@@ -67,7 +68,7 @@ public class GasCoolantRecipeSerializer extends ForgeRegistryEntry<IRecipeSerial
     }
 
     @Override
-    public void toNetwork(PacketBuffer buffer, GasCoolantRecipe recipe) {
+    public void toNetwork(FriendlyByteBuf buffer, GasCoolantRecipe recipe) {
         try {
             recipe.write(buffer);
         } catch (Exception e) {
