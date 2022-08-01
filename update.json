@@ -1,5 +1,8 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/mekanism-fission-recipe",
+  "1.19": {
+    "3.0.0": "Updated to 1.19"
+  },
   "1.18.2": {
     "2.0.0": "Updated to 1.18.2",
     "2.0.1": "Fixed crashing on client with dedicated servers"
@@ -10,6 +13,8 @@
     "1.1.0": "Added coolant recipes"
   },
   "promos": {
+    "1.19-latest": "3.0.0",
+    "1.19-recommended": "3.0.0",
     "1.18.2-latest": "2.0.1",
     "1.18.2-recommended": "2.0.1",
     "1.16.5-latest": "1.1.0",
