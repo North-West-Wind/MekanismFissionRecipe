@@ -1,6 +1,7 @@
 package ml.northwestwind.fissionrecipe;
 
 import mekanism.common.Mekanism;
+import ml.northwestwind.fissionrecipe.events.RegistryEvents;
 import ml.northwestwind.fissionrecipe.recipe.FissionRecipe;
 import ml.northwestwind.fissionrecipe.recipe.FluidCoolantRecipe;
 import ml.northwestwind.fissionrecipe.recipe.GasCoolantRecipe;
@@ -23,6 +24,8 @@ public class MekanismFission {
     public static final String MOD_ID = "fissionrecipe";
 
     public MekanismFission() {
+        RegistryEvents.registerItems();
+        RegistryEvents.registerGases();
         Recipes.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 

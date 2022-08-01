@@ -10,9 +10,7 @@ import net.minecraft.world.item.Item;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.ObjectHolder;
 
-@ObjectHolder(MekanismFission.MOD_ID)
 public class RegistryEvents {
     private static final GasDeferredRegister GASES = new GasDeferredRegister(MekanismFission.MOD_ID);
     private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MekanismFission.MOD_ID);
