@@ -63,7 +63,7 @@ public class MixinGeneratorsJEI {
 
     @Unique
     private static List<FissionRecipe> getFissionRecipes() {
-        if (Thread.currentThread().getThreadGroup() == SidedThreadGroups.SERVER) return ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(MekanismFission.RegistryEvent.Recipes.FISSION.getType());
-        else return DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> (DistExecutor.SafeCallable<List<FissionRecipe>>) () -> Minecraft.getInstance().getConnection().getRecipeManager().getAllRecipesFor(MekanismFission.RegistryEvent.Recipes.FISSION.getType()));
+        if (Thread.currentThread().getThreadGroup() == SidedThreadGroups.SERVER) return ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(MekanismFission.Recipes.FISSION.getType());
+        else return DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> (DistExecutor.SafeCallable<List<FissionRecipe>>) () -> Minecraft.getInstance().getConnection().getRecipeManager().getAllRecipesFor(MekanismFission.Recipes.FISSION.getType()));
     }
 }
