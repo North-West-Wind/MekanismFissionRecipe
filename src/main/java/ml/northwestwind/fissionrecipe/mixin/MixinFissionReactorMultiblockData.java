@@ -11,7 +11,6 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
 import mekanism.api.inventory.AutomationType;
-import mekanism.common.Mekanism;
 import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBuilder;
 import mekanism.common.capabilities.fluid.MultiblockFluidTank;
 import mekanism.common.capabilities.heat.MultiblockHeatCapacitor;
@@ -179,6 +178,8 @@ public abstract class MixinFissionReactorMultiblockData extends MixinMultiblockD
         if (!wasteTank.isEmpty() && !wasteTank.isTypeEqual(recipe.get().getOutputRepresentation().getType())) return;
         double storedFuel = fuelTank.getStored() + this.burnRemaining;
         double toBurn = Math.min(Math.min(this.rateLimit, storedFuel), fuelAssemblies * MekanismGeneratorsConfig.generators.burnPerAssembly.get());
+        double lastPartialWaste = partialWaste;
+        double lastBurnRemaining = burnRemaining;
         storedFuel -= toBurn;
         fuelTank.setStackSize((long) storedFuel, Action.EXECUTE);
         if (fuelTank.isEmpty()) fissionRecipe = Optional.empty();
@@ -200,7 +201,11 @@ public abstract class MixinFissionReactorMultiblockData extends MixinMultiblockD
                 }
             }
         }
-        this.lastBurnRate = toBurn;
+        // update previous burn
+        lastBurnRate = toBurn;
+        if (lastPartialWaste != partialWaste || lastBurnRemaining != burnRemaining) {
+            markDirty();
+        }
     }
 
     @Unique

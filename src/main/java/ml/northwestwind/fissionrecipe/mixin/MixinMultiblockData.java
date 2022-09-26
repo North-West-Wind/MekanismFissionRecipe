@@ -12,6 +12,8 @@ import java.util.List;
 
 @Mixin(value = MultiblockData.class, remap = false)
 public abstract class MixinMultiblockData {
+    @Shadow public abstract void markDirty();
+
     @Shadow protected abstract World getWorld();
 
     @Shadow
