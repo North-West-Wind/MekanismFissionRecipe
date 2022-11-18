@@ -15,12 +15,11 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 import javax.script.ScriptException;
 
-public class GasCoolantRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<GasCoolantRecipe> {
+public class GasCoolantRecipeSerializer implements RecipeSerializer<GasCoolantRecipe> {
     @Override
     public GasCoolantRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
         JsonElement input = GsonHelper.isArrayNode(json, JsonConstants.INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.INPUT) :
