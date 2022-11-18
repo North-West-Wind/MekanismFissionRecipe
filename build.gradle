@@ -14,7 +14,7 @@ apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '2.0.1'
+version = '2.0.2'
 group = 'ml.northwestwind.fissionrecipe' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'fissionrecipe'
 
@@ -80,7 +80,7 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.18.2-40.1.20'
+    minecraft 'net.minecraftforge:forge:1.18.2-40.1.27'
     annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
 
     compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api")

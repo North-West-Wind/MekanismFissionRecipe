@@ -27,6 +27,7 @@ import ml.northwestwind.fissionrecipe.recipe.GasCoolantRecipe;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
+import org.apache.commons.compress.utils.Lists;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -102,7 +103,16 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionReac
         }
 
         public List<FluidStack> getFluidInputs() {
-            return fluidInputs;
+            // If for some reason the input has negative amount, set it to 0
+            List<FluidStack> copy = Lists.newArrayList();
+            fluidInputs.forEach(stack -> {
+                if (stack.getAmount() < 0) {
+                    FluidStack stackCopy = stack;
+                    stackCopy.setAmount(0);
+                    copy.add(stackCopy);
+                } else copy.add(stack);
+            });
+            return copy;
         }
 
         public List<GasStack> getGasInputs() {
