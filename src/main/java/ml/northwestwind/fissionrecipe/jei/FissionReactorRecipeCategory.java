@@ -57,11 +57,11 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionReac
     }
 
     public static List<FluidCoolantRecipe> getFluidCoolants() {
-        return Minecraft.getInstance().getConnection().getRecipeManager().getAllRecipesFor(MekanismFission.Recipes.FLUID_COOLANT.getType());
+        return Minecraft.getInstance().getConnection().getRecipeManager().getAllRecipesFor(MekanismFission.RegistryEvent.Recipes.FLUID_COOLANT.getType());
     }
 
     public static List<GasCoolantRecipe> getGasCoolants() {
-        return Minecraft.getInstance().getConnection().getRecipeManager().getAllRecipesFor(MekanismFission.Recipes.GAS_COOLANT.getType());
+        return Minecraft.getInstance().getConnection().getRecipeManager().getAllRecipesFor(MekanismFission.RegistryEvent.Recipes.GAS_COOLANT.getType());
     }
 
     public void setRecipe(IRecipeLayoutBuilder builder, FissionJEIRecipe recipe, IFocusGroup focuses) {

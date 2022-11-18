@@ -65,12 +65,12 @@ public class FluidCoolantRecipe extends MekanismRecipe implements Predicate<Flui
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return MekanismFission.Recipes.FLUID_COOLANT.getSerializer();
+        return MekanismFission.RegistryEvent.Recipes.FLUID_COOLANT.getSerializer();
     }
 
     @Override
     public RecipeType<?> getType() {
-        return MekanismFission.Recipes.FLUID_COOLANT.getType();
+        return MekanismFission.RegistryEvent.Recipes.FLUID_COOLANT.getType();
     }
 
     public double getHeat(double toBurn) {
@@ -83,9 +83,5 @@ public class FluidCoolantRecipe extends MekanismRecipe implements Predicate<Flui
             e.printStackTrace();
             return 0;
         }
-    }
-
-    public static String location() {
-        return RECIPE_TYPE_ID.getPath();
     }
 }

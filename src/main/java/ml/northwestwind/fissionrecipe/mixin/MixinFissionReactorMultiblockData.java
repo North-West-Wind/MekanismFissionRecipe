@@ -169,7 +169,7 @@ public abstract class MixinFissionReactorMultiblockData extends MixinMultiblockD
      * @reason To handle custom fissile fuel
      */
     @Overwrite
-    private void burnFuel(Level world) {
+    public void burnFuel(Level world) {
         Optional<FissionRecipe> recipe;
         if (!fissionRecipe.isPresent()) fissionRecipe = serverFissionRecipes(this.getWorld().getServer()).stream().filter(r -> r.getInput().testType(fuelTank.getType())).findFirst();
         recipe = fissionRecipe;
@@ -203,17 +203,17 @@ public abstract class MixinFissionReactorMultiblockData extends MixinMultiblockD
 
     @Unique
     private static List<FissionRecipe> serverFissionRecipes(MinecraftServer server) {
-        return server.getRecipeManager().getAllRecipesFor(MekanismFission.Recipes.FISSION.getType());
+        return server.getRecipeManager().getAllRecipesFor(MekanismFission.RegistryEvent.Recipes.FISSION.getType());
     }
 
     @Unique
     private static List<FluidCoolantRecipe> serverFluidCoolantRecipes(MinecraftServer server) {
-        return server.getRecipeManager().getAllRecipesFor(MekanismFission.Recipes.FLUID_COOLANT.getType());
+        return server.getRecipeManager().getAllRecipesFor(MekanismFission.RegistryEvent.Recipes.FLUID_COOLANT.getType());
     }
 
     @Unique
     private static List<GasCoolantRecipe> serverGasCoolantRecipes(MinecraftServer server) {
-        return server.getRecipeManager().getAllRecipesFor(MekanismFission.Recipes.GAS_COOLANT.getType());
+        return server.getRecipeManager().getAllRecipesFor(MekanismFission.RegistryEvent.Recipes.GAS_COOLANT.getType());
     }
 
     @Redirect(at = @At(value = "INVOKE", target = "Lmekanism/common/util/NBTUtils;setGasStackIfPresent(Lnet/minecraft/nbt/CompoundTag;Ljava/lang/String;Ljava/util/function/Consumer;)V", ordinal = 0), method = "readUpdateTag")

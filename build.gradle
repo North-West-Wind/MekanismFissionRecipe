@@ -14,7 +14,7 @@ apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '3.0.0'
+version = '2.0.2'
 group = 'ml.northwestwind.fissionrecipe' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'fissionrecipe'
 
@@ -22,7 +22,7 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {
-    mappings channel: 'official', version: '1.19.1'
+    mappings channel: 'official', version: '1.18.2'
     runs {
         client {
             workingDirectory project.file('run')
@@ -80,12 +80,11 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.19.1-42.0.1'
+    minecraft 'net.minecraftforge:forge:1.18.2-40.1.27'
     annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
 
-    compileOnly fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}")
-    compileOnly fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}")
-    runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}")
+    compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api")
+    runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
 
     implementation fg.deobf("mekanism:Mekanism:${mc_version}-${mekanism_version}")
     implementation fg.deobf("mekanism:Mekanism:${mc_version}-${mekanism_version}:generators")
@@ -93,7 +92,7 @@ dependencies {
 
 jar {
     manifest {
-        classifier = "1.19.1"
+        classifier = "1.18.2"
         attributes([
             "Specification-Title": "fissionrecipe",
             "Specification-Vendor": "fissionrecipe",

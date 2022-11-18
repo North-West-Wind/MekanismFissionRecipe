@@ -36,7 +36,7 @@ public class GasCoolantRecipe extends GasToGasRecipe {
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return MekanismFission.Recipes.GAS_COOLANT.getSerializer();
+        return MekanismFission.RegistryEvent.Recipes.GAS_COOLANT.getSerializer();
     }
 
     @Override
@@ -77,9 +77,5 @@ public class GasCoolantRecipe extends GasToGasRecipe {
             e.printStackTrace();
             return 0;
         }
-    }
-
-    public static String location() {
-        return RECIPE_TYPE_ID.getPath();
     }
 }

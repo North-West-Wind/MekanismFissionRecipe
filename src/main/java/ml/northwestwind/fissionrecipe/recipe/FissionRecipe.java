@@ -34,7 +34,7 @@ public class FissionRecipe extends GasToGasRecipe {
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return MekanismFission.Recipes.FISSION.getSerializer();
+        return MekanismFission.RegistryEvent.Recipes.FISSION.getSerializer();
     }
 
     @Override
@@ -69,9 +69,5 @@ public class FissionRecipe extends GasToGasRecipe {
 
     public Heat getHeatObject() {
         return this.heat;
-    }
-
-    public static String location() {
-        return RECIPE_TYPE.uid().getPath();
     }
 }
