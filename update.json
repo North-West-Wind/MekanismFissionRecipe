@@ -3,10 +3,11 @@
   "1.16.5": {
     "1.0.0": "First release, really e-fission-t",
     "1.0.1": "Allowed equation in heat generation",
-    "1.1.0": "Added coolant recipes"
+    "1.1.0": "Added coolant recipes",
+    "1.1.1": "Fixed client crash on server when placing down reactor components"
   },
   "promos": {
-    "1.16.5-latest": "1.1.0",
-    "1.16.5-recommended": "1.1.0"
+    "1.16.5-latest": "1.1.1",
+    "1.16.5-recommended": "1.1.1"
   }
 }

@@ -11,7 +11,6 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
 import mekanism.api.inventory.AutomationType;
-import mekanism.common.Mekanism;
 import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBuilder;
 import mekanism.common.capabilities.fluid.MultiblockFluidTank;
 import mekanism.common.capabilities.heat.MultiblockHeatCapacitor;
@@ -80,6 +79,7 @@ public abstract class MixinFissionReactorMultiblockData extends MixinMultiblockD
     @Redirect(at = @At(value = "INVOKE", target = "Lmekanism/common/capabilities/fluid/MultiblockFluidTank;create(Lmekanism/common/lib/multiblock/MultiblockData;Lmekanism/common/tile/prefab/TileEntityMultiblock;Ljava/util/function/IntSupplier;Ljava/util/function/BiPredicate;Ljava/util/function/BiPredicate;Ljava/util/function/Predicate;Lmekanism/api/IContentsListener;)Lmekanism/common/capabilities/fluid/MultiblockFluidTank;", ordinal = 0), method = "<init>")
     public <MULTIBLOCK extends MultiblockData> MultiblockFluidTank<MULTIBLOCK> customFluidCoolantTank(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile, IntSupplier capacity, BiPredicate<FluidStack, AutomationType> canExtract, BiPredicate<FluidStack, AutomationType> canInsert, Predicate<FluidStack> validator, IContentsListener listener) {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        if (server == null) return MultiblockFluidTank.create(multiblock, tile, capacity, canExtract, canInsert, validator, listener);
         List<FluidCoolantRecipe> recipes = serverFluidCoolantRecipes(server);
         return MultiblockFluidTank.create(multiblock, tile, capacity, canExtract, canInsert,
                 (fluid) -> recipes.stream().anyMatch(recipe -> recipe.getInput().testType(fluid)), listener);
@@ -88,6 +88,7 @@ public abstract class MixinFissionReactorMultiblockData extends MixinMultiblockD
     @Redirect(at = @At(value = "INVOKE", target = "Lmekanism/common/capabilities/chemical/multiblock/MultiblockChemicalTankBuilder;create(Lmekanism/common/lib/multiblock/MultiblockData;Lmekanism/common/tile/prefab/TileEntityMultiblock;Ljava/util/function/LongSupplier;Ljava/util/function/BiPredicate;Ljava/util/function/BiPredicate;Ljava/util/function/Predicate;)Lmekanism/api/chemical/IChemicalTank;", ordinal = 0), method = "<init>")
     public <MULTIBLOCK extends MultiblockData, TANK extends IChemicalTank<Gas, GasStack>> TANK customGasCoolantTank(MultiblockChemicalTankBuilder<Gas, GasStack, IGasTank> instance, MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile, LongSupplier capacity, BiPredicate<Gas, AutomationType> canExtract, BiPredicate<Gas, AutomationType> canInsert, Predicate<Gas> validator) {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        if (server == null) return (TANK) instance.create(multiblock, tile, capacity, canExtract, canInsert, validator);
         List<GasCoolantRecipe> recipes = serverGasCoolantRecipes(server);
         return (TANK) instance.create(multiblock, tile, capacity, canExtract, canInsert,
                 (gas) -> recipes.stream().anyMatch(recipe -> recipe.getInput().testType(gas)));
@@ -101,6 +102,7 @@ public abstract class MixinFissionReactorMultiblockData extends MixinMultiblockD
     @Redirect(at = @At(value = "INVOKE", target = "Lmekanism/common/capabilities/chemical/multiblock/MultiblockChemicalTankBuilder;create(Lmekanism/common/lib/multiblock/MultiblockData;Lmekanism/common/tile/prefab/TileEntityMultiblock;Ljava/util/function/LongSupplier;Ljava/util/function/BiPredicate;Ljava/util/function/BiPredicate;Ljava/util/function/Predicate;Lmekanism/api/chemical/attribute/ChemicalAttributeValidator;Lmekanism/api/IContentsListener;)Lmekanism/api/chemical/IChemicalTank;", ordinal = 0), method = "<init>")
     public <MULTIBLOCK extends MultiblockData, TANK extends IChemicalTank<Gas, GasStack>> TANK customFuelTank(MultiblockChemicalTankBuilder<Gas, GasStack, TANK> multiblockChemicalTankBuilder, MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile, LongSupplier capacity, BiPredicate<Gas, AutomationType> canExtract, BiPredicate<Gas, AutomationType> canInsert, Predicate<Gas> validator, ChemicalAttributeValidator attributeValidator, IContentsListener listener) {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        if (server == null) return multiblockChemicalTankBuilder.create(multiblock, tile, capacity, canExtract, canInsert, validator, attributeValidator, listener);
         List<FissionRecipe> recipes = serverFissionRecipes(server);
         return multiblockChemicalTankBuilder.create(multiblock, tile, capacity, canExtract, canInsert,
                 (gas) -> recipes.stream().anyMatch(recipe -> recipe.getInput().testType(gas)),
@@ -179,6 +181,8 @@ public abstract class MixinFissionReactorMultiblockData extends MixinMultiblockD
         if (!wasteTank.isEmpty() && !wasteTank.isTypeEqual(recipe.get().getOutputRepresentation().getType())) return;
         double storedFuel = fuelTank.getStored() + this.burnRemaining;
         double toBurn = Math.min(Math.min(this.rateLimit, storedFuel), fuelAssemblies * MekanismGeneratorsConfig.generators.burnPerAssembly.get());
+        double lastPartialWaste = partialWaste;
+        double lastBurnRemaining = burnRemaining;
         storedFuel -= toBurn;
         fuelTank.setStackSize((long) storedFuel, Action.EXECUTE);
         if (fuelTank.isEmpty()) fissionRecipe = Optional.empty();
@@ -200,7 +204,11 @@ public abstract class MixinFissionReactorMultiblockData extends MixinMultiblockD
                 }
             }
         }
-        this.lastBurnRate = toBurn;
+        // update previous burn
+        lastBurnRate = toBurn;
+        if (lastPartialWaste != partialWaste || lastBurnRemaining != burnRemaining) {
+            markDirty();
+        }
     }
 
     @Unique
