@@ -5,19 +5,21 @@
   },
   "1.18.2": {
     "2.0.0": "Updated to 1.18.2",
-    "2.0.1": "Fixed crashing on client with dedicated servers"
+    "2.0.1": "Fixed crashing on client with dedicated servers",
+    "2.0.2": "Fixed JEI throwing capacityMb must be > 0 exception"
   },
   "1.16.5": {
     "1.0.0": "First release, really e-fission-t",
     "1.0.1": "Allowed equation in heat generation",
-    "1.1.0": "Added coolant recipes"
+    "1.1.0": "Added coolant recipes",
+    "1.1.1": "Fixed client crash on server when placing down reactor components"
   },
   "promos": {
     "1.19-latest": "3.0.0",
     "1.19-recommended": "3.0.0",
-    "1.18.2-latest": "2.0.1",
-    "1.18.2-recommended": "2.0.1",
-    "1.16.5-latest": "1.1.0",
-    "1.16.5-recommended": "1.1.0"
+    "1.18.2-latest": "2.0.2",
+    "1.18.2-recommended": "2.0.2",
+    "1.16.5-latest": "1.1.1",
+    "1.16.5-recommended": "1.1.1"
   }
 }
