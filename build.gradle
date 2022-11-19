@@ -22,7 +22,7 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {
-    mappings channel: 'official', version: '1.19.1'
+    mappings channel: 'official', version: '1.19.2'
     runs {
         client {
             workingDirectory project.file('run')
@@ -80,7 +80,7 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.19.1-42.0.1'
+    minecraft 'net.minecraftforge:forge:1.19.2-43.1.52'
     annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
 
     compileOnly fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}")
@@ -93,7 +93,7 @@ dependencies {
 
 jar {
     manifest {
-        classifier = "1.19.1"
+        classifier = "1.19.2"
         attributes([
             "Specification-Title": "fissionrecipe",
             "Specification-Vendor": "fissionrecipe",
