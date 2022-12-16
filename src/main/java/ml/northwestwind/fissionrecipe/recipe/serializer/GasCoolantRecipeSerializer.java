@@ -58,7 +58,7 @@ public class GasCoolantRecipeSerializer implements RecipeSerializer<GasCoolantRe
             double thermalEnthalpy = buffer.readDouble();
             double conductivity = buffer.readDouble();
             boolean isEqt = buffer.readBoolean();
-            Heat heat = new Heat(isEqt, isEqt ? 0 : buffer.readFloat(), isEqt ? buffer.readUtf() : null);
+            Heat heat = new Heat(isEqt, isEqt ? 0 : buffer.readDouble(), isEqt ? buffer.readUtf() : null);
             return new GasCoolantRecipe(recipeId, inputIngredient, output, thermalEnthalpy, conductivity, heat);
         } catch (Exception e) {
             Mekanism.logger.error("Error reading Gas Coolant Recipe from packet.", e);

@@ -56,7 +56,7 @@ public class GasCoolantRecipe extends GasToGasRecipe {
         boolean isEqt = this.heat.isEqt();
         buffer.writeBoolean(isEqt);
         if (isEqt) buffer.writeUtf(this.heat.getEquation());
-        else buffer.writeFloat(this.heat.getConstant());
+        else buffer.writeDouble(this.heat.getConstant());
     }
 
     public double getThermalEnthalpy() {

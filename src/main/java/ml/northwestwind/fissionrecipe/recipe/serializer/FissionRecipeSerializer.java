@@ -54,7 +54,7 @@ public class FissionRecipeSerializer implements RecipeSerializer<FissionRecipe> 
             ChemicalStackIngredient.GasStackIngredient inputIngredient = IngredientCreatorAccess.gas().read(buffer);
             GasStack output = GasStack.readFromPacket(buffer);
             boolean isEqt = buffer.readBoolean();
-            Heat heat = new Heat(isEqt, isEqt ? 0 : buffer.readFloat(), isEqt ? buffer.readUtf() : null);
+            Heat heat = new Heat(isEqt, isEqt ? 0 : buffer.readDouble(), isEqt ? buffer.readUtf() : null);
             return new FissionRecipe(recipeId, inputIngredient, output, heat);
         } catch (Exception e) {
             Mekanism.logger.error("Error reading Fission Recipe from packet.", e);

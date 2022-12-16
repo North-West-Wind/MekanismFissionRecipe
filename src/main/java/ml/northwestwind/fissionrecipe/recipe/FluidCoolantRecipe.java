@@ -21,12 +21,16 @@ public class FluidCoolantRecipe extends MekanismRecipe implements Predicate<Flui
     public static final ResourceLocation RECIPE_TYPE_ID = new ResourceLocation(Mekanism.MODID, "fluid_coolant");
     private final FluidStackIngredient input;
     private final GasStack output;
+    private final double thermalEnthalpy;
+    private final double conductivity;
     private final Heat heat;
 
-    public FluidCoolantRecipe(ResourceLocation id, FluidStackIngredient input, GasStack output, Heat heat) {
+    public FluidCoolantRecipe(ResourceLocation id, FluidStackIngredient input, GasStack output, double thermalEnthalpy, double conductivity, Heat heat) {
         super(id);
         this.input = input;
         this.output = output;
+        this.thermalEnthalpy = thermalEnthalpy;
+        this.conductivity = conductivity;
         this.heat = heat;
     }
 
@@ -47,10 +51,12 @@ public class FluidCoolantRecipe extends MekanismRecipe implements Predicate<Flui
     public void write(FriendlyByteBuf buffer) {
         this.input.write(buffer);
         this.output.writeToPacket(buffer);
+        buffer.writeDouble(this.thermalEnthalpy);
+        buffer.writeDouble(this.conductivity);
         boolean isEqt = this.heat.isEqt();
         buffer.writeBoolean(isEqt);
         if (isEqt) buffer.writeUtf(this.heat.getEquation());
-        else buffer.writeFloat(this.heat.getConstant());
+        else buffer.writeDouble(this.heat.getConstant());
     }
 
     @Override
@@ -71,6 +77,14 @@ public class FluidCoolantRecipe extends MekanismRecipe implements Predicate<Flui
     @Override
     public RecipeType<?> getType() {
         return MekanismFission.Recipes.FLUID_COOLANT.getType();
+    }
+
+    public double getThermalEnthalpy() {
+        return thermalEnthalpy;
+    }
+
+    public double getConductivity() {
+        return conductivity;
     }
 
     public double getHeat(double toBurn) {
