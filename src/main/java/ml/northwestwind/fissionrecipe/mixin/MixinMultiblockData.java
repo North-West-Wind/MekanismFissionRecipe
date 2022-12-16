@@ -8,6 +8,8 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(value = MultiblockData.class, remap = false)
 public abstract class MixinMultiblockData {
+    @Shadow public abstract void markDirty();
+
     @Shadow protected abstract Level getWorld();
 
     @Shadow public abstract VoxelCuboid getBounds();

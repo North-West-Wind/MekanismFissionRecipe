@@ -26,6 +26,8 @@ public class FluidCoolantRecipeSerializer implements RecipeSerializer<FluidCoola
                 GsonHelper.getAsJsonObject(json, JsonConstants.INPUT);
         FluidStackIngredient inputIngredient = IngredientCreatorAccess.fluid().deserialize(input);
         GasStack output = SerializerHelper.getGasStack(json, JsonConstants.OUTPUT);
+        double thermalEnthalpy = json.get("thermalEnthalpy").getAsDouble();
+        double conductivity = json.get("conductivity").getAsDouble();
         JsonElement heatObj = json.get("efficiency");
         boolean isEqt = false;
         float heat = 0;
@@ -44,7 +46,7 @@ public class FluidCoolantRecipeSerializer implements RecipeSerializer<FluidCoola
         if (output.isEmpty()) {
             throw new JsonSyntaxException("Gas Coolant Recipe output must not be empty.");
         }
-        return new FluidCoolantRecipe(recipeId, inputIngredient, output, new Heat(isEqt, heat, heatEqt));
+        return new FluidCoolantRecipe(recipeId, inputIngredient, output, thermalEnthalpy, conductivity, new Heat(isEqt, heat, heatEqt));
     }
 
     @Nullable
@@ -53,9 +55,11 @@ public class FluidCoolantRecipeSerializer implements RecipeSerializer<FluidCoola
         try {
             FluidStackIngredient inputIngredient = IngredientCreatorAccess.fluid().read(buffer);
             GasStack output = GasStack.readFromPacket(buffer);
+            double thermalEnthalpy = buffer.readDouble();
+            double conductivity = buffer.readDouble();
             boolean isEqt = buffer.readBoolean();
-            Heat heat = new Heat(isEqt, isEqt ? 0 : buffer.readFloat(), isEqt ? buffer.readUtf() : null);
-            return new FluidCoolantRecipe(recipeId, inputIngredient, output, heat);
+            Heat heat = new Heat(isEqt, isEqt ? 0 : buffer.readDouble(), isEqt ? buffer.readUtf() : null);
+            return new FluidCoolantRecipe(recipeId, inputIngredient, output, thermalEnthalpy, conductivity, heat);
         } catch (Exception e) {
             Mekanism.logger.error("Error reading Gas Coolant Recipe from packet.", e);
             throw e;

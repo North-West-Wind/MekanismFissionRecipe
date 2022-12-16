@@ -4,7 +4,7 @@ license="GPLv3"
 
 [[mods]]
 modId="fissionrecipe"
-version="3.0.0"
+version="3.0.1"
 displayName="Mekanism Fission Recipe"
 updateJSONURL="https://github.com/North-West-Wind/MekanismFissionRecipe/raw/tiered-bundle/update.json"
 credits="Thanks to Mekanism for creating amazing contents"
@@ -26,13 +26,13 @@ Code extracted from Sky Farm
 [[dependencies.fissionrecipe]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.19,1.20)"
+    versionRange="[1.19.2,1.20)"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.fissionrecipe]]
     modId="mekanismgenerators"
     mandatory=true
-    versionRange="[10,)"
+    versionRange="[10.3.5,)"
     ordering="NONE"
     side="BOTH"

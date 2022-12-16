@@ -12,13 +12,13 @@ public class Heat {
     }
 
     private final boolean isEqt;
-    private final float constant;
+    private final double constant;
     private final String equation;
 
-    public Heat(boolean isEqt, float constant, String equation) {
+    public Heat(boolean isEqt, double constant, String equation) {
         this.isEqt = isEqt;
         if (this.isEqt) {
-            this.constant = 0;
+            this.constant = 0.2;
             this.equation = equation;
         } else {
             this.constant = constant;
@@ -30,7 +30,7 @@ public class Heat {
         return isEqt;
     }
 
-    public float getConstant() {
+    public double getConstant() {
         return constant;
     }
 
