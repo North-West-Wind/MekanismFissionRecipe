@@ -4,16 +4,24 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasBuilder;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.registration.impl.GasDeferredRegister;
 import ml.northwestwind.fissionrecipe.MekanismFission;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 public class RegistryEvents {
     private static final GasDeferredRegister GASES = new GasDeferredRegister(MekanismFission.MOD_ID);
     private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MekanismFission.MOD_ID);
+    private static final CreativeTabMekanismFission tabMekanismFission = new CreativeTabMekanismFission();
+    private static final RegistryObject<Item> RADIOISOTOPE_STABILIZER;
 
     public static void registerGases() {
         GASES.register(FMLJavaModLoadingContext.get().getModEventBus());
@@ -38,6 +46,22 @@ public class RegistryEvents {
         GASES.register("stable_plutonium_239", () -> new Gas(GasBuilder.builder().color(0x21aab7)));
         GASES.register("stable_plutonium_241", () -> new Gas(GasBuilder.builder().color(0x218db7)));
 
-        ITEMS.register("radioisotope_stabilizer", () -> new Item(new Item.Properties().tab(Mekanism.tabMekanism)));
+        RADIOISOTOPE_STABILIZER = ITEMS.register("radioisotope_stabilizer", () -> new Item(new Item.Properties().tab(tabMekanismFission)));
+    }
+
+    private static class CreativeTabMekanismFission extends CreativeModeTab {
+        public CreativeTabMekanismFission() {
+            super(MekanismFission.MOD_ID);
+        }
+        @Override
+        public ItemStack makeIcon() {
+            return RADIOISOTOPE_STABILIZER.get().getDefaultInstance();
+        }
+
+        @Override
+        public Component getDisplayName() {
+            // i dont want to translate it. lets be lazy
+            return MekanismLang.MEKANISM.translate().append("Fission");
+        }
     }
 }
