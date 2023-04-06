@@ -45,6 +45,8 @@ For all fluid (like water) cooling, use this. The following is a sample JSON:
     "gas": "mekanism:steam",
     "amount": 1
   },
+  "thermalEnthalpy": 10,
+  "conductivity": 0.5,
   "efficiency": 1
 }
 ```
