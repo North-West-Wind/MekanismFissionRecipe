@@ -11,6 +11,7 @@ import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBu
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.capabilities.heat.VariableHeatCapacitor;
 import mekanism.common.lib.multiblock.MultiblockData;
+import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
@@ -22,7 +23,6 @@ import ml.northwestwind.fissionrecipe.recipe.FluidCoolantRecipe;
 import ml.northwestwind.fissionrecipe.recipe.GasCoolantRecipe;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.server.ServerLifecycleHooks;
@@ -76,6 +76,8 @@ public abstract class MixinFissionReactorMultiblockData extends MixinMultiblockD
     public IGasTank gasCoolantTank;
     @Shadow
     public long lastBoilRate;
+
+    @Shadow protected abstract long clampCoolantHeated(double heated, long stored);
 
     @Redirect(at = @At(value = "INVOKE", target = "Lmekanism/common/capabilities/fluid/VariableCapacityFluidTank;input(Lmekanism/common/lib/multiblock/MultiblockData;Ljava/util/function/IntSupplier;Ljava/util/function/Predicate;Lmekanism/api/IContentsListener;)Lmekanism/common/capabilities/fluid/VariableCapacityFluidTank;", ordinal = 0), method = "<init>")
     public VariableCapacityFluidTank customFluidCoolantTank(MultiblockData multiblock, IntSupplier capacity, Predicate<@NotNull FluidStack> validator, @Nullable IContentsListener listener) {
@@ -133,18 +135,14 @@ public abstract class MixinFissionReactorMultiblockData extends MixinMultiblockD
             if (!recipe.isPresent()) return;
 
             double caseCoolantHeat = heat * recipe.get().getConductivity();
-            coolantHeated = (long) ((int) (recipe.get().getHeat(caseCoolantHeat) * caseCoolantHeat / recipe.get().getThermalEnthalpy()));
-            coolantHeated = Mth.clamp(coolantHeated, 0, fluidCoolantTank.getFluidAmount());
-            if (coolantHeated > 0L) {
-                MekanismUtils.logMismatchedStackSize(this.fluidCoolantTank.shrinkStack((int) coolantHeated, Action.EXECUTE), coolantHeated);
-
-                if (fluidCoolantTank.isEmpty()) fluidCoolantRecipe = Optional.empty();
-                GasStack output = recipe.get().getOutputRepresentation();
-                output.setAmount(coolantHeated);
-
-                this.heatedCoolantTank.insert(output, Action.EXECUTE, AutomationType.INTERNAL);
-                caseCoolantHeat = (double) coolantHeated * recipe.get().getThermalEnthalpy() / (recipe.get().getHeat(caseCoolantHeat));
-                this.heatCapacitor.handleHeat(-caseCoolantHeat);
+            lastBoilRate = clampCoolantHeated(recipe.get().getEfficiency() * caseCoolantHeat / recipe.get().getThermalEnthalpy(),
+                    fluidCoolantTank.getFluidAmount());
+            if (lastBoilRate > 0) {
+                MekanismUtils.logMismatchedStackSize(fluidCoolantTank.shrinkStack((int) lastBoilRate, Action.EXECUTE), lastBoilRate);
+                // extra steam is dumped
+                heatedCoolantTank.insert(MekanismGases.STEAM.getStack(lastBoilRate), Action.EXECUTE, AutomationType.INTERNAL);
+                caseCoolantHeat = lastBoilRate * recipe.get().getEfficiency() / recipe.get().getOutputEfficiency();
+                heatCapacitor.handleHeat(-caseCoolantHeat);
             }
         } else if (!this.gasCoolantTank.isEmpty()) {
             Optional<GasCoolantRecipe> recipe;
@@ -153,18 +151,18 @@ public abstract class MixinFissionReactorMultiblockData extends MixinMultiblockD
             recipe = gasCoolantRecipe;
             if (!recipe.isPresent()) return;
 
-            double caseCoolantHeat = heat * recipe.get().getConductivity();
-            coolantHeated = (long) ((int) (recipe.get().getHeat(caseCoolantHeat) / recipe.get().getThermalEnthalpy()));
-            coolantHeated = Mth.clamp(coolantHeated, 0, gasCoolantTank.getStored());
-            if (coolantHeated > 0L) {
-                MekanismUtils.logMismatchedStackSize(this.gasCoolantTank.shrinkStack((int) coolantHeated, Action.EXECUTE), coolantHeated);
-                if (gasCoolantTank.isEmpty()) gasCoolantRecipe = Optional.empty();
-                GasStack output = recipe.get().getOutputRepresentation();
-                output.setAmount(coolantHeated);
-                this.heatedCoolantTank.insert(output, Action.EXECUTE, AutomationType.INTERNAL);
-                caseCoolantHeat = (double) coolantHeated * recipe.get().getThermalEnthalpy();
-                this.heatCapacitor.handleHeat(-caseCoolantHeat);
-            }
+            gasCoolantTank.getStack().ifAttributePresent(GasAttributes.CooledCoolant.class, coolantType -> {
+                double caseCoolantHeat = heat * recipe.get().getConductivity();
+                lastBoilRate = clampCoolantHeated(caseCoolantHeat / recipe.get().getThermalEnthalpy(), gasCoolantTank.getStored());
+                if (lastBoilRate > 0) {
+                    MekanismUtils.logMismatchedStackSize(gasCoolantTank.shrinkStack(lastBoilRate, Action.EXECUTE), lastBoilRate);
+                    GasStack output = recipe.get().getOutputRepresentation();
+                    output.setAmount(lastBoilRate);
+                    heatedCoolantTank.insert(output, Action.EXECUTE, AutomationType.INTERNAL);
+                    caseCoolantHeat = lastBoilRate * recipe.get().getThermalEnthalpy();
+                    heatCapacitor.handleHeat(-caseCoolantHeat);
+                }
+            });
         }
 
         this.lastBoilRate = coolantHeated;
@@ -184,32 +182,29 @@ public abstract class MixinFissionReactorMultiblockData extends MixinMultiblockD
 
         double lastPartialWaste = partialWaste;
         double lastBurnRemaining = burnRemaining;
-        double storedFuel = fuelTank.getStored() + this.burnRemaining;
-        double toBurn = Math.min(Math.min(this.rateLimit, storedFuel), fuelAssemblies * MekanismGeneratorsConfig.generators.burnPerAssembly.get());
+        double storedFuel = fuelTank.getStored() + burnRemaining;
+        double toBurn = Math.min(Math.min(rateLimit, storedFuel), fuelAssemblies * MekanismGeneratorsConfig.generators.burnPerAssembly.get());
         storedFuel -= toBurn;
         fuelTank.setStackSize((long) storedFuel, Action.EXECUTE);
-
-        if (fuelTank.isEmpty()) fissionRecipe = Optional.empty();
-
         burnRemaining = storedFuel % 1;
-        this.heatCapacitor.handleHeat(MekanismGeneratorsConfig.generators.energyPerFissionFuel.get().doubleValue() * recipe.get().getHeat(toBurn));
-        this.partialWaste += toBurn * recipe.get().getOutputRepresentation().getAmount();
+        heatCapacitor.handleHeat(toBurn * MekanismGeneratorsConfig.generators.energyPerFissionFuel.get().doubleValue() * recipe.get().getHeat(toBurn));
+        // handle waste
+        partialWaste += toBurn * recipe.get().getOutputRepresentation().getAmount();
         long newWaste = (long) Math.floor(partialWaste);
         if (newWaste > 0) {
             partialWaste %= 1;
-            long leftoverWaste = Math.max(0, newWaste - this.wasteTank.getNeeded());
+            long leftoverWaste = Math.max(0, newWaste - wasteTank.getNeeded());
             GasStack wasteToAdd = recipe.get().getOutputRepresentation();
             wasteToAdd.setAmount(newWaste);
             wasteTank.insert(wasteToAdd, Action.EXECUTE, AutomationType.INTERNAL);
-            if (leftoverWaste > 0) {
-                GasAttributes.Radiation radiation = wasteToAdd.getType().get(GasAttributes.Radiation.class);
-                if (radiation != null) {
-                    double radioactivity = radiation.getRadioactivity();
-                    MekanismAPI.getRadiationManager().radiate(new Coord4D(this.getBounds().getCenter(), world), leftoverWaste * radioactivity);
-                }
+            if (leftoverWaste > 0 && MekanismAPI.getRadiationManager().isRadiationEnabled()) {
+                //Check if radiation is enabled in order to allow for short-circuiting when it will NO-OP further down the line anyway
+                wasteToAdd.ifAttributePresent(GasAttributes.Radiation.class, attribute ->
+                        MekanismAPI.getRadiationManager().radiate(new Coord4D(getBounds().getCenter(), world), leftoverWaste * attribute.getRadioactivity()));
             }
         }
-        this.lastBurnRate = toBurn;
+        // update previous burn
+        lastBurnRate = toBurn;
         if (lastPartialWaste != partialWaste || lastBurnRemaining != burnRemaining) {
             markDirty();
         }

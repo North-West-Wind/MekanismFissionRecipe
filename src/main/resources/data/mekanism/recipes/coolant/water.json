@@ -10,5 +10,6 @@
   },
   "thermalEnthalpy": 10,
   "conductivity": 0.5,
-  "efficiency": 0.2
+  "efficiency": 0.2,
+  "outputEfficiency": 0.2
 }

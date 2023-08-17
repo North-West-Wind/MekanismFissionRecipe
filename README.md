@@ -45,7 +45,10 @@ For all fluid (like water) cooling, use this. The following is a sample JSON:
     "gas": "mekanism:steam",
     "amount": 1
   },
-  "efficiency": 1
+  "thermalEnthalpy": 10,
+  "conductivity": 0.5,
+  "efficiency": 0.2,
+  "outputEfficiency": 0.2
 }
 ```
 - Type: Always use "mekanism:fluid_coolant" if you are adding a fluid coolant recipe.
@@ -72,8 +75,7 @@ For all chemical (like sodium) cooling, use this. The following is a sample JSON
     "amount": 1
   },
   "thermalEnthalpy": 5,
-  "conductivity": 1,
-  "efficiency": 1
+  "conductivity": 1
 }
 ```
 - Type: Always use "mekanism:fluid_coolant" if you are adding a fluid coolant recipe.
