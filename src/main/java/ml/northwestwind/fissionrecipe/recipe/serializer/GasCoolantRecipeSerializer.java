@@ -2,14 +2,12 @@ package ml.northwestwind.fissionrecipe.recipe.serializer;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
 import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
-import ml.northwestwind.fissionrecipe.misc.Heat;
 import ml.northwestwind.fissionrecipe.recipe.GasCoolantRecipe;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -17,7 +15,6 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
 import javax.annotation.Nullable;
-import javax.script.ScriptException;
 
 public class GasCoolantRecipeSerializer implements RecipeSerializer<GasCoolantRecipe> {
     @Override

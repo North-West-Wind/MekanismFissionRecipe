@@ -6,7 +6,6 @@ import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.common.Mekanism;
 import ml.northwestwind.fissionrecipe.MekanismFission;
-import ml.northwestwind.fissionrecipe.misc.Heat;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -14,7 +13,6 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.fluids.FluidStack;
 
-import javax.script.ScriptException;
 import java.util.function.Predicate;
 
 public class FluidCoolantRecipe extends MekanismRecipe implements Predicate<FluidStack> {

@@ -23,7 +23,6 @@ import ml.northwestwind.fissionrecipe.recipe.FluidCoolantRecipe;
 import ml.northwestwind.fissionrecipe.recipe.GasCoolantRecipe;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.server.ServerLifecycleHooks;

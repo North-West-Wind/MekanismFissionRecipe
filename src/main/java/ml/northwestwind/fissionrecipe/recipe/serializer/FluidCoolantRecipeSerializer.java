@@ -9,7 +9,6 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
-import ml.northwestwind.fissionrecipe.misc.Heat;
 import ml.northwestwind.fissionrecipe.recipe.FluidCoolantRecipe;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -17,7 +16,6 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
 import javax.annotation.Nullable;
-import javax.script.ScriptException;
 
 public class FluidCoolantRecipeSerializer implements RecipeSerializer<FluidCoolantRecipe> {
     @Override
