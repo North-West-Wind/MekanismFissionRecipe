@@ -28,25 +28,12 @@ public class FluidCoolantRecipeSerializer implements RecipeSerializer<FluidCoola
         GasStack output = SerializerHelper.getGasStack(json, JsonConstants.OUTPUT);
         double thermalEnthalpy = json.get("thermalEnthalpy").getAsDouble();
         double conductivity = json.get("conductivity").getAsDouble();
-        JsonElement heatObj = json.get("efficiency");
-        boolean isEqt = false;
-        float heat = 0;
-        String heatEqt = null;
-        try {
-            heat = 1 / heatObj.getAsFloat();
-        } catch (ClassCastException ignored) {
-            heatEqt = heatObj.getAsString().replaceAll("x", "(1/x)");
-            try {
-                Heat.JS_ENGINE.eval(heatEqt.replaceAll("x", "0"));
-            } catch (ScriptException e) {
-                throw new JsonSyntaxException("Gas Coolant Recipe heat equation is not valid.");
-            }
-            isEqt = true;
-        }
+        double efficiency = json.get("efficiency").getAsDouble();
+        double outputEfficiency = json.get("outputEfficiency").getAsDouble();
         if (output.isEmpty()) {
-            throw new JsonSyntaxException("Gas Coolant Recipe output must not be empty.");
+            throw new JsonSyntaxException("Fluid Coolant Recipe output must not be empty.");
         }
-        return new FluidCoolantRecipe(recipeId, inputIngredient, output, thermalEnthalpy, conductivity, new Heat(isEqt, heat, heatEqt));
+        return new FluidCoolantRecipe(recipeId, inputIngredient, output, thermalEnthalpy, conductivity, efficiency, outputEfficiency);
     }
 
     @Nullable
@@ -57,11 +44,11 @@ public class FluidCoolantRecipeSerializer implements RecipeSerializer<FluidCoola
             GasStack output = GasStack.readFromPacket(buffer);
             double thermalEnthalpy = buffer.readDouble();
             double conductivity = buffer.readDouble();
-            boolean isEqt = buffer.readBoolean();
-            Heat heat = new Heat(isEqt, isEqt ? 0 : buffer.readDouble(), isEqt ? buffer.readUtf() : null);
-            return new FluidCoolantRecipe(recipeId, inputIngredient, output, thermalEnthalpy, conductivity, heat);
+            double efficiency = buffer.readDouble();
+            double outputEfficiency = buffer.readDouble();
+            return new FluidCoolantRecipe(recipeId, inputIngredient, output, thermalEnthalpy, conductivity, efficiency, outputEfficiency);
         } catch (Exception e) {
-            Mekanism.logger.error("Error reading Gas Coolant Recipe from packet.", e);
+            Mekanism.logger.error("Error reading Fluid Coolant Recipe from packet.", e);
             throw e;
         }
     }
@@ -71,7 +58,7 @@ public class FluidCoolantRecipeSerializer implements RecipeSerializer<FluidCoola
         try {
             recipe.write(buffer);
         } catch (Exception e) {
-            Mekanism.logger.error("Error writing Gas Coolant Recipe to packet.", e);
+            Mekanism.logger.error("Error writing Fluid Coolant Recipe to packet.", e);
             throw e;
         }
     }

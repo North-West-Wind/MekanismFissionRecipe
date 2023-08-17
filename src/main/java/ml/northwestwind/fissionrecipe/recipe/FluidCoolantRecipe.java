@@ -21,17 +21,16 @@ public class FluidCoolantRecipe extends MekanismRecipe implements Predicate<Flui
     public static final ResourceLocation RECIPE_TYPE_ID = new ResourceLocation(Mekanism.MODID, "fluid_coolant");
     private final FluidStackIngredient input;
     private final GasStack output;
-    private final double thermalEnthalpy;
-    private final double conductivity;
-    private final Heat heat;
+    private final double thermalEnthalpy,  conductivity, efficiency, outputEfficiency;
 
-    public FluidCoolantRecipe(ResourceLocation id, FluidStackIngredient input, GasStack output, double thermalEnthalpy, double conductivity, Heat heat) {
+    public FluidCoolantRecipe(ResourceLocation id, FluidStackIngredient input, GasStack output, double thermalEnthalpy, double conductivity, double efficiency, double outputEfficiency) {
         super(id);
         this.input = input;
         this.output = output;
         this.thermalEnthalpy = thermalEnthalpy;
         this.conductivity = conductivity;
-        this.heat = heat;
+        this.efficiency = efficiency;
+        this.outputEfficiency = outputEfficiency;
     }
 
     @Override
@@ -53,10 +52,8 @@ public class FluidCoolantRecipe extends MekanismRecipe implements Predicate<Flui
         this.output.writeToPacket(buffer);
         buffer.writeDouble(this.thermalEnthalpy);
         buffer.writeDouble(this.conductivity);
-        boolean isEqt = this.heat.isEqt();
-        buffer.writeBoolean(isEqt);
-        if (isEqt) buffer.writeUtf(this.heat.getEquation());
-        else buffer.writeDouble(this.heat.getConstant());
+        buffer.writeDouble(this.efficiency);
+        buffer.writeDouble(this.outputEfficiency);
     }
 
     @Override
@@ -87,16 +84,12 @@ public class FluidCoolantRecipe extends MekanismRecipe implements Predicate<Flui
         return conductivity;
     }
 
-    public double getHeat(double toBurn) {
-        if (!this.heat.isEqt()) return toBurn * this.heat.getConstant();
-        String substituted = this.heat.getEquation().replaceAll("x", Double.toString(toBurn));
-        try {
-            return (double) Heat.JS_ENGINE.eval(substituted);
-        } catch (ScriptException e) {
-            Mekanism.logger.error("Failed to evaluate Fission Recipe equation.");
-            e.printStackTrace();
-            return 0;
-        }
+    public double getEfficiency() {
+        return efficiency;
+    }
+
+    public double getOutputEfficiency() {
+        return outputEfficiency;
     }
 
     public static String location() {

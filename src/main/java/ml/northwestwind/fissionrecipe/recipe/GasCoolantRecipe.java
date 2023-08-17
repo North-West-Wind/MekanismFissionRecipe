@@ -18,15 +18,12 @@ import javax.script.ScriptException;
 
 public class GasCoolantRecipe extends GasToGasRecipe {
     public static final ResourceLocation RECIPE_TYPE_ID = new ResourceLocation(Mekanism.MODID, "gas_coolant");
-    private final double thermalEnthalpy;
-    private final double conductivity;
-    private final Heat heat;
+    private final double thermalEnthalpy, conductivity;
 
-    public GasCoolantRecipe(ResourceLocation id, ChemicalStackIngredient.GasStackIngredient input, GasStack output, double thermalEnthalpy, double conductivity, Heat heat) {
+    public GasCoolantRecipe(ResourceLocation id, ChemicalStackIngredient.GasStackIngredient input, GasStack output, double thermalEnthalpy, double conductivity) {
         super(id, input, output);
         this.thermalEnthalpy = thermalEnthalpy;
         this.conductivity = conductivity;
-        this.heat = heat;
     }
 
     @Override
@@ -53,10 +50,6 @@ public class GasCoolantRecipe extends GasToGasRecipe {
         super.write(buffer);
         buffer.writeDouble(this.thermalEnthalpy);
         buffer.writeDouble(this.conductivity);
-        boolean isEqt = this.heat.isEqt();
-        buffer.writeBoolean(isEqt);
-        if (isEqt) buffer.writeUtf(this.heat.getEquation());
-        else buffer.writeDouble(this.heat.getConstant());
     }
 
     public double getThermalEnthalpy() {
@@ -65,18 +58,6 @@ public class GasCoolantRecipe extends GasToGasRecipe {
 
     public double getConductivity() {
         return conductivity;
-    }
-
-    public double getHeat(double toBurn) {
-        if (!this.heat.isEqt()) return toBurn * this.heat.getConstant();
-        String substituted = this.heat.getEquation().replaceAll("x", Double.toString(toBurn));
-        try {
-            return (double) Heat.JS_ENGINE.eval(substituted);
-        } catch (ScriptException e) {
-            Mekanism.logger.error("Failed to evaluate Fission Recipe equation.");
-            e.printStackTrace();
-            return 0;
-        }
     }
 
     public static String location() {

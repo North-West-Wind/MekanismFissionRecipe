@@ -9,6 +9,5 @@
     "amount": 1
   },
   "thermalEnthalpy": 5,
-  "conductivity": 1,
-  "efficiency": 1
+  "conductivity": 1
 }
