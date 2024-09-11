@@ -6,12 +6,14 @@ import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.common.Mekanism;
 import ml.northwestwind.fissionrecipe.MekanismFission;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Predicate;
 
@@ -60,7 +62,7 @@ public class FluidCoolantRecipe extends MekanismRecipe implements Predicate<Flui
     }
 
     @Override
-    public ItemStack assemble(IgnoredIInventory p_77572_1_) {
+    public ItemStack assemble(@NotNull IgnoredIInventory inv, @NotNull RegistryAccess registryAccess) {
         return ItemStack.EMPTY;
     }
 

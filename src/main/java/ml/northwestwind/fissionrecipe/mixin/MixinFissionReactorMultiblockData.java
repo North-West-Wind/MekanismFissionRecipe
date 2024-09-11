@@ -7,6 +7,7 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
+import mekanism.api.radiation.IRadiationManager;
 import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBuilder;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.capabilities.heat.VariableHeatCapacitor;
@@ -50,7 +51,7 @@ public abstract class MixinFissionReactorMultiblockData extends MixinMultiblockD
     @Shadow
     public IGasTank fuelTank;
     @Shadow
-    public int fuelAssemblies;
+    private int fuelAssemblies;
     @Shadow
     public double burnRemaining;
     @Shadow
@@ -195,10 +196,10 @@ public abstract class MixinFissionReactorMultiblockData extends MixinMultiblockD
             GasStack wasteToAdd = recipe.get().getOutputRepresentation();
             wasteToAdd.setAmount(newWaste);
             wasteTank.insert(wasteToAdd, Action.EXECUTE, AutomationType.INTERNAL);
-            if (leftoverWaste > 0 && MekanismAPI.getRadiationManager().isRadiationEnabled()) {
+            if (leftoverWaste > 0 && IRadiationManager.INSTANCE.isRadiationEnabled()) {
                 //Check if radiation is enabled in order to allow for short-circuiting when it will NO-OP further down the line anyway
                 wasteToAdd.ifAttributePresent(GasAttributes.Radiation.class, attribute ->
-                        MekanismAPI.getRadiationManager().radiate(new Coord4D(getBounds().getCenter(), world), leftoverWaste * attribute.getRadioactivity()));
+                        IRadiationManager.INSTANCE.radiate(new Coord4D(getBounds().getCenter(), world), leftoverWaste * attribute.getRadioactivity()));
             }
         }
         // update previous burn

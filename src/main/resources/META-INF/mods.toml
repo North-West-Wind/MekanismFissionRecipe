@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[41,)"
+loaderVersion="[47,)"
 license="GPLv3"
 
 [[mods]]
@@ -19,20 +19,20 @@ Code extracted from Sky Farm
 [[dependencies.fissionrecipe]]
     modId="forge"
     mandatory=true
-    versionRange="[41,)"
+    versionRange="[47,)"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.fissionrecipe]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.19.2,1.20)"
+    versionRange="[1.20.1,1.21)"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.fissionrecipe]]
     modId="mekanismgenerators"
     mandatory=true
-    versionRange="[10.3.5,)"
+    versionRange="[10.4.9,)"
     ordering="NONE"
     side="BOTH"

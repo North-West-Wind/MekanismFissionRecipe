@@ -7,11 +7,13 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.common.Mekanism;
 import ml.northwestwind.fissionrecipe.MekanismFission;
 import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
+import org.jetbrains.annotations.NotNull;
 
 public class GasCoolantRecipe extends GasToGasRecipe {
     public static final ResourceLocation RECIPE_TYPE_ID = new ResourceLocation(Mekanism.MODID, "gas_coolant");
@@ -24,7 +26,7 @@ public class GasCoolantRecipe extends GasToGasRecipe {
     }
 
     @Override
-    public ItemStack assemble(IgnoredIInventory p_77572_1_) {
+    public ItemStack assemble(@NotNull IgnoredIInventory inv, @NotNull RegistryAccess registryAccess) {
         return ItemStack.EMPTY;
     }
 
@@ -35,7 +37,7 @@ public class GasCoolantRecipe extends GasToGasRecipe {
 
     @Override
     public RecipeType<?> getType() {
-        return Registry.RECIPE_TYPE.get(RECIPE_TYPE_ID);
+        return MekanismFission.Recipes.GAS_COOLANT.getType();
     }
 
     public GasStack getOutputRepresentation() {

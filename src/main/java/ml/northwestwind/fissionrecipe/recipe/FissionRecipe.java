@@ -10,11 +10,13 @@ import ml.northwestwind.fissionrecipe.MekanismFission;
 import ml.northwestwind.fissionrecipe.jei.FissionReactorRecipeCategory;
 import ml.northwestwind.fissionrecipe.misc.Heat;
 import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
+import org.jetbrains.annotations.NotNull;
 
 import javax.script.ScriptException;
 
@@ -28,7 +30,7 @@ public class FissionRecipe extends GasToGasRecipe {
     }
 
     @Override
-    public ItemStack assemble(IgnoredIInventory inventory) {
+    public ItemStack assemble(@NotNull IgnoredIInventory inv, @NotNull RegistryAccess registryAccess) {
         return ItemStack.EMPTY;
     }
 
@@ -39,7 +41,7 @@ public class FissionRecipe extends GasToGasRecipe {
 
     @Override
     public RecipeType<?> getType() {
-        return Registry.RECIPE_TYPE.get(RECIPE_TYPE.uid());
+        return MekanismFission.Recipes.FISSION.getType();
     }
 
     public GasStack getOutputRepresentation() {

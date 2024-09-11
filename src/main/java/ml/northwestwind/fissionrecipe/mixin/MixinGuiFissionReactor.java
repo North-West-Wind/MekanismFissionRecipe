@@ -3,6 +3,7 @@ package ml.northwestwind.fissionrecipe.mixin;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiBigLight;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiBar;
 import mekanism.client.gui.element.bar.GuiDynamicHorizontalRateBar;
@@ -26,6 +27,7 @@ import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.network.to_server.PacketGeneratorsGuiInteract;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import ml.northwestwind.fissionrecipe.recipe.FissionRecipe;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -75,26 +77,11 @@ public abstract class MixinGuiFissionReactor extends MixinGuiMekanismTile<TileEn
             return Collections.singletonList(MekanismLang.DISSIPATED_RATE.translate(environment));
         }));
         final TileEntityFissionReactorCasing tileCopy = tile;
-        activateButton = addRenderableWidget(new TranslationButton((GuiFissionReactor) (Object) this, 6, 75, 81, 16, GeneratorsLang.FISSION_ACTIVATE,
-                () -> MekanismGenerators.packetHandler().sendToServer(new PacketGeneratorsGuiInteract(PacketGeneratorsGuiInteract.GeneratorsGuiInteraction.FISSION_ACTIVE, tile, 1)), null,
-                () -> EnumColor.DARK_GREEN) {
-            @Override
-            public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
-                super.renderForeground(matrix, mouseX, mouseY);
-                if (!active && tileCopy.getMultiblock().isForceDisabled()) {
-                    active = true;
-                    //Temporarily set active to true, so we can easily check if the mouse is over the button
-                    if (isMouseOverCheckWindows(mouseX, mouseY)) {
-                        matrix.pushPose();
-                        //Offset to fix rendering position
-                        matrix.translate(-getGuiLeft(), -getGuiTop(), 0);
-                        displayTooltips(matrix, mouseX, mouseY, GeneratorsLang.FISSION_FORCE_DISABLED.translate());
-                        matrix.popPose();
-                    }
-                    active = false;
-                }
-            }
-        });
+        this.activateButton = (TranslationButton)this.addRenderableWidget(new TranslationButton((GuiFissionReactor) (Object)this, 6, 75, 81, 16, GeneratorsLang.FISSION_ACTIVATE, () -> {
+            MekanismGenerators.packetHandler().sendToServer(new PacketGeneratorsGuiInteract(PacketGeneratorsGuiInteract.GeneratorsGuiInteraction.FISSION_ACTIVE, this.tile, 1.0));
+        }, (GuiElement.IHoverable)null, () -> {
+            return EnumColor.DARK_GREEN;
+        }));
         scramButton = addRenderableWidget(new TranslationButton((GuiFissionReactor) (Object) this, 89, 75, 81, 16, GeneratorsLang.FISSION_SCRAM,
                 () -> MekanismGenerators.packetHandler().sendToServer(new PacketGeneratorsGuiInteract(PacketGeneratorsGuiInteract.GeneratorsGuiInteraction.FISSION_ACTIVE, tile, 0)), null,
                 () -> EnumColor.DARK_RED));
