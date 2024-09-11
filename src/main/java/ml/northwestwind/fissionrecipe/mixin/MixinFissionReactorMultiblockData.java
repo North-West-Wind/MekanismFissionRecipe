@@ -11,7 +11,6 @@ import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBu
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.capabilities.heat.VariableHeatCapacitor;
 import mekanism.common.lib.multiblock.MultiblockData;
-import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
@@ -135,12 +134,11 @@ public abstract class MixinFissionReactorMultiblockData extends MixinMultiblockD
             if (!recipe.isPresent()) return;
 
             double caseCoolantHeat = heat * recipe.get().getConductivity();
-            lastBoilRate = clampCoolantHeated(recipe.get().getEfficiency() * caseCoolantHeat / recipe.get().getThermalEnthalpy(),
+            lastBoilRate = clampCoolantHeated((recipe.get().getEfficiency() / recipe.get().getThermalEnthalpy()) * caseCoolantHeat ,
                     fluidCoolantTank.getFluidAmount());
             if (lastBoilRate > 0) {
                 MekanismUtils.logMismatchedStackSize(fluidCoolantTank.shrinkStack((int) lastBoilRate, Action.EXECUTE), lastBoilRate);
-                // extra steam is dumped
-                heatedCoolantTank.insert(MekanismGases.STEAM.getStack(lastBoilRate), Action.EXECUTE, AutomationType.INTERNAL);
+                heatedCoolantTank.insert(recipe.get().getOutputRepresentation().getType().getStack(lastBoilRate * recipe.get().getOutputRepresentation().getAmount() / recipe.get().getInput().getNeededAmount(fluidCoolantTank.getFluid())), Action.EXECUTE, AutomationType.INTERNAL);
                 caseCoolantHeat = lastBoilRate * recipe.get().getEfficiency() / recipe.get().getOutputEfficiency();
                 heatCapacitor.handleHeat(-caseCoolantHeat);
             }
@@ -151,18 +149,18 @@ public abstract class MixinFissionReactorMultiblockData extends MixinMultiblockD
             recipe = gasCoolantRecipe;
             if (!recipe.isPresent()) return;
 
-            gasCoolantTank.getStack().ifAttributePresent(GasAttributes.CooledCoolant.class, coolantType -> {
+            if (recipe.get().getInput().test(gasCoolantTank.getStack())) {
                 double caseCoolantHeat = heat * recipe.get().getConductivity();
                 lastBoilRate = clampCoolantHeated(caseCoolantHeat / recipe.get().getThermalEnthalpy(), gasCoolantTank.getStored());
                 if (lastBoilRate > 0) {
                     MekanismUtils.logMismatchedStackSize(gasCoolantTank.shrinkStack(lastBoilRate, Action.EXECUTE), lastBoilRate);
                     GasStack output = recipe.get().getOutputRepresentation();
-                    output.setAmount(lastBoilRate);
+                    output.setAmount(lastBoilRate * recipe.get().getOutputRepresentation().getAmount() / recipe.get().getInput().getNeededAmount(gasCoolantTank.getStack()));
                     heatedCoolantTank.insert(output, Action.EXECUTE, AutomationType.INTERNAL);
                     caseCoolantHeat = lastBoilRate * recipe.get().getThermalEnthalpy();
                     heatCapacitor.handleHeat(-caseCoolantHeat);
                 }
-            });
+            }
         }
 
         this.lastBoilRate = coolantHeated;
