@@ -28,10 +28,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
@@ -42,6 +39,7 @@ import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 
+@Debug(export = true)
 @Mixin(value = FissionReactorMultiblockData.class, remap = false)
 public abstract class MixinFissionReactorMultiblockData extends MixinMultiblockData {
     private Optional<FissionRecipe> fissionRecipe = Optional.empty();
@@ -139,7 +137,7 @@ public abstract class MixinFissionReactorMultiblockData extends MixinMultiblockD
                     fluidCoolantTank.getFluidAmount());
             if (lastBoilRate > 0) {
                 MekanismUtils.logMismatchedStackSize(fluidCoolantTank.shrinkStack((int) lastBoilRate, Action.EXECUTE), lastBoilRate);
-                heatedCoolantTank.insert(recipe.get().getOutputRepresentation().getType().getStack(lastBoilRate * recipe.get().getOutputRepresentation().getAmount() / recipe.get().getInput().getNeededAmount(fluidCoolantTank.getFluid())), Action.EXECUTE, AutomationType.INTERNAL);
+                heatedCoolantTank.insert(recipe.get().getOutputRepresentation().getType().getStack(lastBoilRate * recipe.get().getOutputRepresentation().getAmount() / recipe.get().getInput().getRepresentations().get(0).getAmount()), Action.EXECUTE, AutomationType.INTERNAL);
                 caseCoolantHeat = lastBoilRate * recipe.get().getEfficiency() / recipe.get().getOutputEfficiency();
                 heatCapacitor.handleHeat(-caseCoolantHeat);
             }
@@ -156,7 +154,7 @@ public abstract class MixinFissionReactorMultiblockData extends MixinMultiblockD
                 if (lastBoilRate > 0) {
                     MekanismUtils.logMismatchedStackSize(gasCoolantTank.shrinkStack(lastBoilRate, Action.EXECUTE), lastBoilRate);
                     GasStack output = recipe.get().getOutputRepresentation();
-                    output.setAmount(lastBoilRate * recipe.get().getOutputRepresentation().getAmount() / recipe.get().getInput().getNeededAmount(gasCoolantTank.getStack()));
+                    output.setAmount(lastBoilRate * recipe.get().getOutputRepresentation().getAmount() / recipe.get().getInput().getRepresentations().get(0).getAmount());
                     heatedCoolantTank.insert(output, Action.EXECUTE, AutomationType.INTERNAL);
                     caseCoolantHeat = lastBoilRate * recipe.get().getThermalEnthalpy();
                     heatCapacitor.handleHeat(-caseCoolantHeat);

@@ -4,7 +4,7 @@ license="GPLv3"
 
 [[mods]]
 modId="fissionrecipe"
-version="3.0.2"
+version="3.0.3"
 displayName="Mekanism Fission Recipe"
 updateJSONURL="https://github.com/North-West-Wind/MekanismFissionRecipe/raw/main/update.json"
 credits="Thanks to Mekanism for creating amazing contents"
