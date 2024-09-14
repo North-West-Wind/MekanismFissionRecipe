@@ -123,7 +123,6 @@ public abstract class MixinFissionReactorMultiblockData extends MixinMultiblockD
     private void handleCoolant() {
         double temp = this.heatCapacitor.getTemperature();
         double heat = this.getBoilEfficiency() * (temp - HeatUtils.BASE_BOIL_TEMP) * this.heatCapacitor.getHeatCapacity();
-        long coolantHeated = 0;
 
         if (!fluidCoolantTank.isEmpty()) {
             Optional<FluidCoolantRecipe> recipe;
@@ -138,7 +137,7 @@ public abstract class MixinFissionReactorMultiblockData extends MixinMultiblockD
             if (lastBoilRate > 0) {
                 MekanismUtils.logMismatchedStackSize(fluidCoolantTank.shrinkStack((int) lastBoilRate, Action.EXECUTE), lastBoilRate);
                 heatedCoolantTank.insert(recipe.get().getOutputRepresentation().getType().getStack(lastBoilRate * recipe.get().getOutputRepresentation().getAmount() / recipe.get().getInput().getRepresentations().get(0).getAmount()), Action.EXECUTE, AutomationType.INTERNAL);
-                caseCoolantHeat = lastBoilRate * recipe.get().getEfficiency() / recipe.get().getOutputEfficiency();
+                caseCoolantHeat = (double) lastBoilRate * recipe.get().getEfficiency() / recipe.get().getOutputEfficiency();
                 heatCapacitor.handleHeat(-caseCoolantHeat);
             }
         } else if (!this.gasCoolantTank.isEmpty()) {
@@ -156,13 +155,11 @@ public abstract class MixinFissionReactorMultiblockData extends MixinMultiblockD
                     GasStack output = recipe.get().getOutputRepresentation();
                     output.setAmount(lastBoilRate * recipe.get().getOutputRepresentation().getAmount() / recipe.get().getInput().getRepresentations().get(0).getAmount());
                     heatedCoolantTank.insert(output, Action.EXECUTE, AutomationType.INTERNAL);
-                    caseCoolantHeat = lastBoilRate * recipe.get().getThermalEnthalpy();
+                    caseCoolantHeat = (double) lastBoilRate * recipe.get().getThermalEnthalpy();
                     heatCapacitor.handleHeat(-caseCoolantHeat);
                 }
             }
         }
-
-        this.lastBoilRate = coolantHeated;
     }
 
     /**
@@ -179,15 +176,15 @@ public abstract class MixinFissionReactorMultiblockData extends MixinMultiblockD
 
         double lastPartialWaste = partialWaste;
         double lastBurnRemaining = burnRemaining;
-        double storedFuel = fuelTank.getStored() + burnRemaining;
-        double toBurn = Math.min(Math.min(rateLimit, storedFuel), fuelAssemblies * MekanismGeneratorsConfig.generators.burnPerAssembly.get());
+        double storedFuel = (double) fuelTank.getStored() + burnRemaining;
+        double toBurn = Math.min(Math.min(this.rateLimit, storedFuel), (double)((long)this.fuelAssemblies * MekanismGeneratorsConfig.generators.burnPerAssembly.get()));
         storedFuel -= toBurn;
         fuelTank.setStackSize((long) storedFuel, Action.EXECUTE);
         burnRemaining = storedFuel % 1;
-        heatCapacitor.handleHeat(toBurn * MekanismGeneratorsConfig.generators.energyPerFissionFuel.get().doubleValue() * recipe.get().getHeat(toBurn));
+        heatCapacitor.handleHeat(MekanismGeneratorsConfig.generators.energyPerFissionFuel.get().doubleValue() * recipe.get().getHeat(toBurn));
         // handle waste
         partialWaste += toBurn * recipe.get().getOutputRepresentation().getAmount();
-        long newWaste = (long) Math.floor(partialWaste);
+        long newWaste = (long) Math.floor(partialWaste) * recipe.get().getOutputRepresentation().getAmount() / recipe.get().getInput().getRepresentations().get(0).getAmount();
         if (newWaste > 0) {
             partialWaste %= 1;
             long leftoverWaste = Math.max(0, newWaste - wasteTank.getNeeded());
