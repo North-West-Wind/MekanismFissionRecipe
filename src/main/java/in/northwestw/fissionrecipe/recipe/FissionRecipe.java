@@ -1,4 +1,4 @@
-package ml.northwestwind.fissionrecipe.recipe;
+package in.northwestw.fissionrecipe.recipe;
 
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.inventory.IgnoredIInventory;
@@ -6,10 +6,9 @@ import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.Mekanism;
-import ml.northwestwind.fissionrecipe.MekanismFission;
-import ml.northwestwind.fissionrecipe.jei.FissionReactorRecipeCategory;
-import ml.northwestwind.fissionrecipe.misc.Heat;
-import net.minecraft.core.Registry;
+import in.northwestw.fissionrecipe.MekanismFission;
+import in.northwestw.fissionrecipe.jei.FissionReactorRecipeCategory;
+import in.northwestw.fissionrecipe.misc.Heat;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;

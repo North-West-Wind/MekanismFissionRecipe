@@ -1,4 +1,4 @@
-package ml.northwestwind.fissionrecipe.mixin;
+package in.northwestw.fissionrecipe.mixin;
 
 import mekanism.api.*;
 import mekanism.api.chemical.IChemicalTank;
@@ -17,10 +17,10 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
-import ml.northwestwind.fissionrecipe.MekanismFission;
-import ml.northwestwind.fissionrecipe.recipe.FissionRecipe;
-import ml.northwestwind.fissionrecipe.recipe.FluidCoolantRecipe;
-import ml.northwestwind.fissionrecipe.recipe.GasCoolantRecipe;
+import in.northwestw.fissionrecipe.MekanismFission;
+import in.northwestw.fissionrecipe.recipe.FissionRecipe;
+import in.northwestw.fissionrecipe.recipe.FluidCoolantRecipe;
+import in.northwestw.fissionrecipe.recipe.GasCoolantRecipe;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
@@ -39,7 +39,6 @@ import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 
-@Debug(export = true)
 @Mixin(value = FissionReactorMultiblockData.class, remap = false)
 public abstract class MixinFissionReactorMultiblockData extends MixinMultiblockData {
     private Optional<FissionRecipe> fissionRecipe = Optional.empty();
@@ -137,7 +136,7 @@ public abstract class MixinFissionReactorMultiblockData extends MixinMultiblockD
             if (lastBoilRate > 0) {
                 MekanismUtils.logMismatchedStackSize(fluidCoolantTank.shrinkStack((int) lastBoilRate, Action.EXECUTE), lastBoilRate);
                 heatedCoolantTank.insert(recipe.get().getOutputRepresentation().getType().getStack(lastBoilRate * recipe.get().getOutputRepresentation().getAmount() / recipe.get().getInput().getRepresentations().get(0).getAmount()), Action.EXECUTE, AutomationType.INTERNAL);
-                caseCoolantHeat = (double) lastBoilRate * recipe.get().getEfficiency() / recipe.get().getOutputEfficiency();
+                caseCoolantHeat = (double) lastBoilRate * recipe.get().getThermalEnthalpy() / recipe.get().getEfficiency();
                 heatCapacitor.handleHeat(-caseCoolantHeat);
             }
         } else if (!this.gasCoolantTank.isEmpty()) {

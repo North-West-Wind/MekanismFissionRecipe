@@ -1,4 +1,4 @@
-package ml.northwestwind.fissionrecipe.mixin;
+package in.northwestw.fissionrecipe.mixin;
 
 import mekanism.common.lib.math.voxel.VoxelCuboid;
 import mekanism.common.lib.multiblock.MultiblockData;

@@ -1,6 +1,5 @@
-package ml.northwestwind.fissionrecipe.mixin;
+package in.northwestw.fissionrecipe.mixin;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiBigLight;
 import mekanism.client.gui.element.GuiElement;
@@ -26,8 +25,7 @@ import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.network.to_server.PacketGeneratorsGuiInteract;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
-import ml.northwestwind.fissionrecipe.recipe.FissionRecipe;
-import net.minecraft.client.gui.GuiGraphics;
+import in.northwestw.fissionrecipe.recipe.FissionRecipe;
 import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

@@ -1,12 +1,11 @@
-package ml.northwestwind.fissionrecipe.recipe;
+package in.northwestw.fissionrecipe.recipe;
 
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.inventory.IgnoredIInventory;
 import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.common.Mekanism;
-import ml.northwestwind.fissionrecipe.MekanismFission;
-import net.minecraft.core.Registry;
+import in.northwestw.fissionrecipe.MekanismFission;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;

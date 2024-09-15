@@ -1,12 +1,12 @@
-package ml.northwestwind.fissionrecipe;
+package in.northwestw.fissionrecipe;
 
 import mekanism.common.Mekanism;
-import ml.northwestwind.fissionrecipe.recipe.FissionRecipe;
-import ml.northwestwind.fissionrecipe.recipe.FluidCoolantRecipe;
-import ml.northwestwind.fissionrecipe.recipe.GasCoolantRecipe;
-import ml.northwestwind.fissionrecipe.recipe.serializer.FissionRecipeSerializer;
-import ml.northwestwind.fissionrecipe.recipe.serializer.FluidCoolantRecipeSerializer;
-import ml.northwestwind.fissionrecipe.recipe.serializer.GasCoolantRecipeSerializer;
+import in.northwestw.fissionrecipe.recipe.FissionRecipe;
+import in.northwestw.fissionrecipe.recipe.FluidCoolantRecipe;
+import in.northwestw.fissionrecipe.recipe.GasCoolantRecipe;
+import in.northwestw.fissionrecipe.recipe.serializer.FissionRecipeSerializer;
+import in.northwestw.fissionrecipe.recipe.serializer.FluidCoolantRecipeSerializer;
+import in.northwestw.fissionrecipe.recipe.serializer.GasCoolantRecipeSerializer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;

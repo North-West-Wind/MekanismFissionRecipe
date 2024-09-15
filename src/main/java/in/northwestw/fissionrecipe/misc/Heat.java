@@ -1,4 +1,4 @@
-package ml.northwestwind.fissionrecipe.misc;
+package in.northwestw.fissionrecipe.misc;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;

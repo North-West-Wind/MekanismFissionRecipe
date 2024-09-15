@@ -1,4 +1,4 @@
-package ml.northwestwind.fissionrecipe.mixin;
+package in.northwestw.fissionrecipe.mixin;
 
 import com.google.common.collect.Lists;
 import mekanism.client.jei.CatalystRegistryHelper;
@@ -9,11 +9,11 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
-import ml.northwestwind.fissionrecipe.MekanismFission;
-import ml.northwestwind.fissionrecipe.jei.FissionReactorRecipeCategory;
-import ml.northwestwind.fissionrecipe.recipe.FissionRecipe;
-import ml.northwestwind.fissionrecipe.recipe.FluidCoolantRecipe;
-import ml.northwestwind.fissionrecipe.recipe.GasCoolantRecipe;
+import in.northwestw.fissionrecipe.MekanismFission;
+import in.northwestw.fissionrecipe.jei.FissionReactorRecipeCategory;
+import in.northwestw.fissionrecipe.recipe.FissionRecipe;
+import in.northwestw.fissionrecipe.recipe.FluidCoolantRecipe;
+import in.northwestw.fissionrecipe.recipe.GasCoolantRecipe;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;

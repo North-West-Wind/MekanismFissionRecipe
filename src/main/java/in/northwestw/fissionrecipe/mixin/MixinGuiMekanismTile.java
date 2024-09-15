@@ -1,4 +1,4 @@
-package ml.northwestwind.fissionrecipe.mixin;
+package in.northwestw.fissionrecipe.mixin;
 
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;

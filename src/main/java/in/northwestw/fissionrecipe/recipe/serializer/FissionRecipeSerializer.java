@@ -1,4 +1,4 @@
-package ml.northwestwind.fissionrecipe.recipe.serializer;
+package in.northwestw.fissionrecipe.recipe.serializer;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -9,8 +9,8 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
-import ml.northwestwind.fissionrecipe.misc.Heat;
-import ml.northwestwind.fissionrecipe.recipe.FissionRecipe;
+import in.northwestw.fissionrecipe.misc.Heat;
+import in.northwestw.fissionrecipe.recipe.FissionRecipe;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;

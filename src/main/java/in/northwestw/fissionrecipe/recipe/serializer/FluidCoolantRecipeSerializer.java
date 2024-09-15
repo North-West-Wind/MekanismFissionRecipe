@@ -1,4 +1,4 @@
-package ml.northwestwind.fissionrecipe.recipe.serializer;
+package in.northwestw.fissionrecipe.recipe.serializer;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -9,7 +9,7 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
-import ml.northwestwind.fissionrecipe.recipe.FluidCoolantRecipe;
+import in.northwestw.fissionrecipe.recipe.FluidCoolantRecipe;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -27,11 +27,10 @@ public class FluidCoolantRecipeSerializer implements RecipeSerializer<FluidCoola
         double thermalEnthalpy = json.get("thermalEnthalpy").getAsDouble();
         double conductivity = json.get("conductivity").getAsDouble();
         double efficiency = json.get("efficiency").getAsDouble();
-        double outputEfficiency = json.get("outputEfficiency").getAsDouble();
         if (output.isEmpty()) {
             throw new JsonSyntaxException("Fluid Coolant Recipe output must not be empty.");
         }
-        return new FluidCoolantRecipe(recipeId, inputIngredient, output, thermalEnthalpy, conductivity, efficiency, outputEfficiency);
+        return new FluidCoolantRecipe(recipeId, inputIngredient, output, thermalEnthalpy, conductivity, efficiency);
     }
 
     @Nullable
@@ -43,8 +42,7 @@ public class FluidCoolantRecipeSerializer implements RecipeSerializer<FluidCoola
             double thermalEnthalpy = buffer.readDouble();
             double conductivity = buffer.readDouble();
             double efficiency = buffer.readDouble();
-            double outputEfficiency = buffer.readDouble();
-            return new FluidCoolantRecipe(recipeId, inputIngredient, output, thermalEnthalpy, conductivity, efficiency, outputEfficiency);
+            return new FluidCoolantRecipe(recipeId, inputIngredient, output, thermalEnthalpy, conductivity, efficiency);
         } catch (Exception e) {
             Mekanism.logger.error("Error reading Fluid Coolant Recipe from packet.", e);
             throw e;

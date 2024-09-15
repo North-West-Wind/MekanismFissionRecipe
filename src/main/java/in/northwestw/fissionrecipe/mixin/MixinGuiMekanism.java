@@ -1,4 +1,4 @@
-package ml.northwestwind.fissionrecipe.mixin;
+package in.northwestw.fissionrecipe.mixin;
 
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.GuiElement;

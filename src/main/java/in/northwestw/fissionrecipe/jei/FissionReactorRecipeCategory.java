@@ -1,4 +1,4 @@
-package ml.northwestwind.fissionrecipe.jei;
+package in.northwestw.fissionrecipe.jei;
 
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.heat.HeatAPI;
@@ -20,10 +20,10 @@ import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import ml.northwestwind.fissionrecipe.MekanismFission;
-import ml.northwestwind.fissionrecipe.recipe.FissionRecipe;
-import ml.northwestwind.fissionrecipe.recipe.FluidCoolantRecipe;
-import ml.northwestwind.fissionrecipe.recipe.GasCoolantRecipe;
+import in.northwestw.fissionrecipe.MekanismFission;
+import in.northwestw.fissionrecipe.recipe.FissionRecipe;
+import in.northwestw.fissionrecipe.recipe.FluidCoolantRecipe;
+import in.northwestw.fissionrecipe.recipe.GasCoolantRecipe;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;

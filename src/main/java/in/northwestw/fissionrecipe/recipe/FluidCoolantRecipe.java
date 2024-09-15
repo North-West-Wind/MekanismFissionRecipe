@@ -1,11 +1,11 @@
-package ml.northwestwind.fissionrecipe.recipe;
+package in.northwestw.fissionrecipe.recipe;
 
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.inventory.IgnoredIInventory;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.common.Mekanism;
-import ml.northwestwind.fissionrecipe.MekanismFission;
+import in.northwestw.fissionrecipe.MekanismFission;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -21,16 +21,15 @@ public class FluidCoolantRecipe extends MekanismRecipe implements Predicate<Flui
     public static final ResourceLocation RECIPE_TYPE_ID = new ResourceLocation(Mekanism.MODID, "fluid_coolant");
     private final FluidStackIngredient input;
     private final GasStack output;
-    private final double thermalEnthalpy,  conductivity, efficiency, outputEfficiency;
+    private final double thermalEnthalpy,  conductivity, efficiency;
 
-    public FluidCoolantRecipe(ResourceLocation id, FluidStackIngredient input, GasStack output, double thermalEnthalpy, double conductivity, double efficiency, double outputEfficiency) {
+    public FluidCoolantRecipe(ResourceLocation id, FluidStackIngredient input, GasStack output, double thermalEnthalpy, double conductivity, double efficiency) {
         super(id);
         this.input = input;
         this.output = output;
         this.thermalEnthalpy = thermalEnthalpy;
         this.conductivity = conductivity;
         this.efficiency = efficiency;
-        this.outputEfficiency = outputEfficiency;
     }
 
     @Override
@@ -53,7 +52,6 @@ public class FluidCoolantRecipe extends MekanismRecipe implements Predicate<Flui
         buffer.writeDouble(this.thermalEnthalpy);
         buffer.writeDouble(this.conductivity);
         buffer.writeDouble(this.efficiency);
-        buffer.writeDouble(this.outputEfficiency);
     }
 
     @Override
@@ -86,10 +84,6 @@ public class FluidCoolantRecipe extends MekanismRecipe implements Predicate<Flui
 
     public double getEfficiency() {
         return efficiency;
-    }
-
-    public double getOutputEfficiency() {
-        return outputEfficiency;
     }
 
     public static String location() {
