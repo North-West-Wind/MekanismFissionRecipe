@@ -92,8 +92,8 @@ Please take a look at the `test_recipes` directory.
 This is originally implemented in [Sky Farm](https://www.curseforge.com/minecraft/modpacks/sky-farm-1-16), but I feel like this feature has its own potential, so I took it out, and made it a standalone mod.
 
 ## Help?
-If you find my projects great, you can support me by joining my Patreon!
-[![Patreon](https://drive.google.com/uc?export=download&id=1AH5YdXRoE6G3RQKqWY03TsYMy1H_E5lU)](https://www.patreon.com/nww)
+If you find my projects great, you can support me on Ko-fi!
+[![An inkling girl drinking tea](https://files.catbox.moe/qlm7iq.png)](https://ko-fi.com/nww)
 
 ## License
 This mod is running under GNU GPLv3.
