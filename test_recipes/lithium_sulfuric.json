@@ -1,0 +1,14 @@
+{
+  "type": "mekanism:fluid_coolant",
+  "input": {
+    "fluid": "mekanism:lithium",
+    "amount": 1
+  },
+  "output": {
+    "id": "mekanism:sulfuric_acid",
+    "amount": 1
+  },
+  "thermalEnthalpy": 100,
+  "conductivity": 0.5,
+  "efficiency": 0.2
+}

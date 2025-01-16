@@ -1,11 +1,11 @@
 {
   "type": "mekanism:fluid_coolant",
   "input": {
-    "tag": "forge:water",
+    "tag": "minecraft:water",
     "amount": 1
   },
   "output": {
-    "gas": "mekanism:steam",
+    "id": "mekanism:steam",
     "amount": 1
   },
   "thermalEnthalpy": 10,

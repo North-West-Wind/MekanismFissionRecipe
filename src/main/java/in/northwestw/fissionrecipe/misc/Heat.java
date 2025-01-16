@@ -1,25 +1,19 @@
 package in.northwestw.fissionrecipe.misc;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.mojang.datafixers.util.Either;
 import io.netty.buffer.ByteBuf;
+import io.netty.handler.codec.CodecException;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
-public class Heat {
-    public static final MapCodec<Heat> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Codec.BOOL.fieldOf("isEqt").forGetter(Heat::isEqt),
-            Codec.DOUBLE.fieldOf("constant").forGetter(Heat::getConstant),
-            Codec.STRING.fieldOf("equation").forGetter(Heat::getEquation)
-    ).apply(instance, Heat::new));
+public record Heat(boolean isEqt, double constant, String equation) {
     public static final StreamCodec<ByteBuf, Heat> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.BOOL, Heat::isEqt,
-            ByteBufCodecs.DOUBLE, Heat::getConstant,
-            ByteBufCodecs.STRING_UTF8, Heat::getEquation,
+            ByteBufCodecs.DOUBLE, Heat::constant,
+            ByteBufCodecs.STRING_UTF8, Heat::equation,
             Heat::new
     );
     public static final ScriptEngine JS_ENGINE;
@@ -29,10 +23,6 @@ public class Heat {
         JS_ENGINE = mgr.getEngineByName("JavaScript");
     }
 
-    private final boolean isEqt;
-    private final double constant;
-    private final String equation;
-
     public Heat(boolean isEqt, double constant, String equation) {
         this.isEqt = isEqt;
         if (this.isEqt) {
@@ -40,19 +30,17 @@ public class Heat {
             this.equation = equation;
         } else {
             this.constant = constant;
-            this.equation = null;
+            this.equation = "";
         }
     }
 
-    public boolean isEqt() {
-        return isEqt;
+    public Either<Double, String> getEither() {
+        return this.isEqt ? Either.right(this.equation) : Either.left(this.constant);
     }
 
-    public double getConstant() {
-        return constant;
-    }
-
-    public String getEquation() {
-        return equation;
+    public static Heat fromEither(Either<Double, String> either) {
+        if (either.left().isPresent()) return new Heat(false, either.left().get(), "");
+        if (either.right().isPresent()) return new Heat(true, 0, either.right().get());
+        throw new CodecException("Both left and right of either is empty");
     }
 }

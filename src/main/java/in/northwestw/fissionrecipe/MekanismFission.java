@@ -15,6 +15,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.apache.logging.log4j.LogManager;
@@ -22,7 +23,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.function.Supplier;
 
-@net.neoforged.fml.common.Mod(MekanismFission.MOD_ID)
+@Mod(MekanismFission.MOD_ID)
 public class MekanismFission {
     public static final String MOD_ID = "fissionrecipe";
     public static final Logger LOGGER = LogManager.getLogger();
@@ -35,7 +36,7 @@ public class MekanismFission {
     public static class RecipeTypes {
         private static final DeferredRegister<RecipeType<?>> TYPES = DeferredRegister.create(BuiltInRegistries.RECIPE_TYPE, Mekanism.MODID);
         public static final DeferredHolder<RecipeType<?>, RecipeType<ChemicalToChemicalRecipe>> FISSION = TYPES.register("fission", () -> RecipeType.simple(Mekanism.rl("fission")));
-        public static final DeferredHolder<RecipeType<?>, RecipeType<FluidChemicalToChemicalRecipe>> FLUID_COOLANT = TYPES.register("fluid_coolant", () -> RecipeType.simple(Mekanism.rl("fluid_coolant")));
+        public static final DeferredHolder<RecipeType<?>, RecipeType<FluidCoolantRecipe>> FLUID_COOLANT = TYPES.register("fluid_coolant", () -> RecipeType.simple(Mekanism.rl("fluid_coolant")));
         public static final DeferredHolder<RecipeType<?>, RecipeType<ChemicalToChemicalRecipe>> GAS_COOLANT = TYPES.register("gas_coolant", () -> RecipeType.simple(Mekanism.rl("gas_coolant")));
 
         private static void register(IEventBus bus) {

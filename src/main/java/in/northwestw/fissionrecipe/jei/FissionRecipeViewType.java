@@ -4,6 +4,7 @@ import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
+import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.MekanismGenerators;
@@ -20,7 +21,7 @@ public record FissionRecipeViewType(
         int xOffset, int yOffset, int width, int height, List<IItemProvider> workstations
 ) implements IRecipeViewerRecipeType<FissionJEIRecipe> {
     public static final FissionRecipeViewType FISSION = new FissionRecipeViewType(
-            MekanismGenerators.rl("fission"),
+            Mekanism.rl("fission"),
             MekanismUtils.getResource(MekanismUtils.ResourceType.GUI, "radioactive.png"),
             null,
             GeneratorsLang.FISSION_REACTOR,

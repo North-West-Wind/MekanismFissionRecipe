@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:fission",
+  "input": {
+    "chemical": "mekanism:oxygen",
+    "amount": 1
+  },
+  "output": {
+    "id": "mekanism:hydrogen",
+    "amount": 10
+  },
+  "heat": 2.5
+}

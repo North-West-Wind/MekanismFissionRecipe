@@ -1,0 +1,13 @@
+{
+  "type": "mekanism:gas_coolant",
+  "input": {
+    "chemical": "mekanism:sodium",
+    "amount": 1
+  },
+  "output": {
+    "id": "mekanism:superheated_sodium",
+    "amount": 1
+  },
+  "thermalEnthalpy": 5,
+  "conductivity": 1
+}

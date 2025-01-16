@@ -8,11 +8,8 @@
     "MixinMultiblockData"
   ],
   "client": [
-    "MixinAbstractContainerScreen",
     "MixinGeneratorsJEI",
-    "MixinGuiFissionReactor",
-    "MixinGuiMekanism",
-    "MixinGuiMekanismTile"
+    "MixinGuiFissionReactor"
   ],
   "minVersion": "0.8"
 }

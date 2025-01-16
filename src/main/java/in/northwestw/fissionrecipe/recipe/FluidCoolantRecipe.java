@@ -18,9 +18,9 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class FluidCoolantRecipe extends MekanismRecipe<SingleFluidRecipeInput> implements Predicate<FluidStack> {
-    public static final String REGISTRY_NAME = "fluid_coolant";
     private final FluidStackIngredient input;
     private final ChemicalStack output;
     private final double thermalEnthalpy,  conductivity, efficiency;
