@@ -1,61 +1,32 @@
 package in.northwestw.fissionrecipe.recipe.serializer;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
-import mekanism.api.JsonConstants;
-import mekanism.api.SerializerHelper;
-import mekanism.api.chemical.gas.GasStack;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import mekanism.api.SerializationConstants;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
-import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
-import mekanism.common.Mekanism;
 import in.northwestw.fissionrecipe.recipe.FluidCoolantRecipe;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
-import javax.annotation.Nullable;
-
-public class FluidCoolantRecipeSerializer implements RecipeSerializer<FluidCoolantRecipe> {
-    @Override
-    public FluidCoolantRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
-        JsonElement input = GsonHelper.isArrayNode(json, JsonConstants.INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.INPUT) :
-                GsonHelper.getAsJsonObject(json, JsonConstants.INPUT);
-        FluidStackIngredient inputIngredient = IngredientCreatorAccess.fluid().deserialize(input);
-        GasStack output = SerializerHelper.getGasStack(json, JsonConstants.OUTPUT);
-        double thermalEnthalpy = json.get("thermalEnthalpy").getAsDouble();
-        double conductivity = json.get("conductivity").getAsDouble();
-        double efficiency = json.get("efficiency").getAsDouble();
-        if (output.isEmpty()) {
-            throw new JsonSyntaxException("Fluid Coolant Recipe output must not be empty.");
-        }
-        return new FluidCoolantRecipe(recipeId, inputIngredient, output, thermalEnthalpy, conductivity, efficiency);
-    }
-
-    @Nullable
-    @Override
-    public FluidCoolantRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
-        try {
-            FluidStackIngredient inputIngredient = IngredientCreatorAccess.fluid().read(buffer);
-            GasStack output = GasStack.readFromPacket(buffer);
-            double thermalEnthalpy = buffer.readDouble();
-            double conductivity = buffer.readDouble();
-            double efficiency = buffer.readDouble();
-            return new FluidCoolantRecipe(recipeId, inputIngredient, output, thermalEnthalpy, conductivity, efficiency);
-        } catch (Exception e) {
-            Mekanism.logger.error("Error reading Fluid Coolant Recipe from packet.", e);
-            throw e;
-        }
-    }
-
-    @Override
-    public void toNetwork(FriendlyByteBuf buffer, FluidCoolantRecipe recipe) {
-        try {
-            recipe.write(buffer);
-        } catch (Exception e) {
-            Mekanism.logger.error("Error writing Fluid Coolant Recipe to packet.", e);
-            throw e;
-        }
+public record FluidCoolantRecipeSerializer(MapCodec<FluidCoolantRecipe> codec, StreamCodec<RegistryFriendlyByteBuf, FluidCoolantRecipe> streamCodec) implements RecipeSerializer<FluidCoolantRecipe> {
+    public static FluidCoolantRecipeSerializer create() {
+        return new FluidCoolantRecipeSerializer(RecordCodecBuilder.mapCodec(instance -> instance.group(
+                FluidStackIngredient.CODEC.fieldOf(SerializationConstants.INPUT).forGetter(FluidCoolantRecipe::getInput),
+                ChemicalStack.MAP_CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(FluidCoolantRecipe::getOutput),
+                Codec.DOUBLE.fieldOf("thermalEnthalpy").forGetter(FluidCoolantRecipe::getThermalEnthalpy),
+                Codec.DOUBLE.fieldOf("conductivity").forGetter(FluidCoolantRecipe::getConductivity),
+                Codec.DOUBLE.fieldOf("efficiency").forGetter(FluidCoolantRecipe::getEfficiency)
+        ).apply(instance, FluidCoolantRecipe::new)), StreamCodec.composite(
+                FluidStackIngredient.STREAM_CODEC, FluidCoolantRecipe::getInput,
+                ChemicalStack.STREAM_CODEC, FluidCoolantRecipe::getOutput,
+                ByteBufCodecs.DOUBLE, FluidCoolantRecipe::getThermalEnthalpy,
+                ByteBufCodecs.DOUBLE, FluidCoolantRecipe::getConductivity,
+                ByteBufCodecs.DOUBLE, FluidCoolantRecipe::getEfficiency,
+                FluidCoolantRecipe::new
+        ));
     }
 }

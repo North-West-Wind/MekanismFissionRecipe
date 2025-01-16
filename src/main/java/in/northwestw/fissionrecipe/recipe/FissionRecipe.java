@@ -1,59 +1,28 @@
 package in.northwestw.fissionrecipe.recipe;
 
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.inventory.IgnoredIInventory;
-import mekanism.api.recipes.GasToGasRecipe;
+import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.recipes.basic.BasicChemicalToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
-import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.Mekanism;
 import in.northwestw.fissionrecipe.MekanismFission;
-import in.northwestw.fissionrecipe.jei.FissionReactorRecipeCategory;
 import in.northwestw.fissionrecipe.misc.Heat;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
-import org.jetbrains.annotations.NotNull;
 
 import javax.script.ScriptException;
 
-public class FissionRecipe extends GasToGasRecipe {
-    public static final MekanismJEIRecipeType<FissionReactorRecipeCategory.FissionJEIRecipe> RECIPE_TYPE = new MekanismJEIRecipeType<>(Mekanism.rl("fission"), FissionReactorRecipeCategory.FissionJEIRecipe.class);
+public class FissionRecipe extends BasicChemicalToChemicalRecipe {
+    public static final String REGISTRY_NAME = "fission";
     private final Heat heat;
 
-    public FissionRecipe(ResourceLocation id, ChemicalStackIngredient.GasStackIngredient input, GasStack output, Heat heat) {
-        super(id, input, output);
+    public FissionRecipe(ChemicalStackIngredient input, ChemicalStack output, Heat heat) {
+        super(input, output, MekanismFission.RecipeTypes.FISSION.get());
         this.heat = heat;
     }
 
     @Override
-    public ItemStack assemble(@NotNull IgnoredIInventory inv, @NotNull RegistryAccess registryAccess) {
-        return ItemStack.EMPTY;
-    }
-
-    @Override
     public RecipeSerializer<?> getSerializer() {
-        return MekanismFission.Recipes.FISSION.getSerializer();
-    }
-
-    @Override
-    public RecipeType<?> getType() {
-        return MekanismFission.Recipes.FISSION.getType();
-    }
-
-    public GasStack getOutputRepresentation() {
-        return this.output.copy();
-    }
-
-    @Override
-    public void write(FriendlyByteBuf buffer) {
-        super.write(buffer);
-        boolean isEqt = this.heat.isEqt();
-        buffer.writeBoolean(isEqt);
-        if (isEqt) buffer.writeUtf(this.heat.getEquation());
-        else buffer.writeDouble(this.heat.getConstant());
+        return MekanismFission.RecipeSerializers.FISSION.get();
     }
 
     public double getHeat(double toBurn) {
@@ -68,11 +37,7 @@ public class FissionRecipe extends GasToGasRecipe {
         }
     }
 
-    public Heat getHeatObject() {
+    public Heat getHeat() {
         return this.heat;
-    }
-
-    public static String location() {
-        return RECIPE_TYPE.uid().getPath();
     }
 }

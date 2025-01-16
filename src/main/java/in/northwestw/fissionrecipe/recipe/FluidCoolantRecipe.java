@@ -1,9 +1,10 @@
 package in.northwestw.fissionrecipe.recipe;
 
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.inventory.IgnoredIInventory;
+import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.recipes.FluidChemicalToChemicalRecipe;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import mekanism.api.recipes.vanilla_input.SingleFluidRecipeInput;
 import mekanism.common.Mekanism;
 import in.northwestw.fissionrecipe.MekanismFission;
 import net.minecraft.core.RegistryAccess;
@@ -12,19 +13,19 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraftforge.fluids.FluidStack;
+import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Predicate;
 
-public class FluidCoolantRecipe extends MekanismRecipe implements Predicate<FluidStack> {
-    public static final ResourceLocation RECIPE_TYPE_ID = new ResourceLocation(Mekanism.MODID, "fluid_coolant");
+public class FluidCoolantRecipe extends MekanismRecipe<SingleFluidRecipeInput> implements Predicate<FluidStack> {
+    public static final String REGISTRY_NAME = "fluid_coolant";
     private final FluidStackIngredient input;
-    private final GasStack output;
+    private final ChemicalStack output;
     private final double thermalEnthalpy,  conductivity, efficiency;
 
-    public FluidCoolantRecipe(ResourceLocation id, FluidStackIngredient input, GasStack output, double thermalEnthalpy, double conductivity, double efficiency) {
-        super(id);
+    public FluidCoolantRecipe(FluidStackIngredient input, ChemicalStack output, double thermalEnthalpy, double conductivity, double efficiency) {
         this.input = input;
         this.output = output;
         this.thermalEnthalpy = thermalEnthalpy;
@@ -41,17 +42,12 @@ public class FluidCoolantRecipe extends MekanismRecipe implements Predicate<Flui
         return this.input;
     }
 
-    public GasStack getOutputRepresentation() {
+    public ChemicalStack getOutput() {
         return this.output;
     }
 
-    @Override
-    public void write(FriendlyByteBuf buffer) {
-        this.input.write(buffer);
-        this.output.writeToPacket(buffer);
-        buffer.writeDouble(this.thermalEnthalpy);
-        buffer.writeDouble(this.conductivity);
-        buffer.writeDouble(this.efficiency);
+    public ChemicalStack getOutputRepresentation() {
+        return this.output;
     }
 
     @Override
@@ -60,18 +56,18 @@ public class FluidCoolantRecipe extends MekanismRecipe implements Predicate<Flui
     }
 
     @Override
-    public ItemStack assemble(@NotNull IgnoredIInventory inv, @NotNull RegistryAccess registryAccess) {
-        return ItemStack.EMPTY;
+    public boolean matches(SingleFluidRecipeInput input, Level level) {
+        return !this.isIncomplete() && this.test(input.fluid());
     }
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return MekanismFission.Recipes.FLUID_COOLANT.getSerializer();
+        return MekanismFission.RecipeSerializers.FLUID_COOLANT.get();
     }
 
     @Override
     public RecipeType<?> getType() {
-        return MekanismFission.Recipes.FLUID_COOLANT.getType();
+        return MekanismFission.RecipeTypes.FLUID_COOLANT.get();
     }
 
     public double getThermalEnthalpy() {
@@ -84,9 +80,5 @@ public class FluidCoolantRecipe extends MekanismRecipe implements Predicate<Flui
 
     public double getEfficiency() {
         return efficiency;
-    }
-
-    public static String location() {
-        return RECIPE_TYPE_ID.getPath();
     }
 }

@@ -1,5 +1,7 @@
 package in.northwestw.fissionrecipe;
 
+import mekanism.api.recipes.ChemicalToChemicalRecipe;
+import mekanism.api.recipes.FluidChemicalToChemicalRecipe;
 import mekanism.common.Mekanism;
 import in.northwestw.fissionrecipe.recipe.FissionRecipe;
 import in.northwestw.fissionrecipe.recipe.FluidCoolantRecipe;
@@ -7,63 +9,48 @@ import in.northwestw.fissionrecipe.recipe.GasCoolantRecipe;
 import in.northwestw.fissionrecipe.recipe.serializer.FissionRecipeSerializer;
 import in.northwestw.fissionrecipe.recipe.serializer.FluidCoolantRecipeSerializer;
 import in.northwestw.fissionrecipe.recipe.serializer.GasCoolantRecipeSerializer;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@Mod(MekanismFission.MOD_ID)
+import java.util.function.Supplier;
+
+@net.neoforged.fml.common.Mod(MekanismFission.MOD_ID)
 public class MekanismFission {
     public static final String MOD_ID = "fissionrecipe";
     public static final Logger LOGGER = LogManager.getLogger();
 
-    public MekanismFission() {
-        Recipes.register(FMLJavaModLoadingContext.get().getModEventBus());
+    public MekanismFission(IEventBus bus) {
+        RecipeTypes.register(bus);
+        RecipeSerializers.register(bus);
     }
 
-    public static class Recipes<S extends RecipeSerializer<?>> {
-        private static final DeferredRegister<RecipeSerializer<?>> SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, Mekanism.MODID);
-        private static final DeferredRegister<RecipeType<?>> TYPES = DeferredRegister.create(ForgeRegistries.RECIPE_TYPES, Mekanism.MODID);
-        public static final Recipes<FissionRecipeSerializer> FISSION = new Recipes<>(SERIALIZERS.register(FissionRecipe.location(), FissionRecipeSerializer::new));
-        public static final Recipes<FluidCoolantRecipeSerializer> FLUID_COOLANT = new Recipes<>(SERIALIZERS.register(FluidCoolantRecipe.location(), FluidCoolantRecipeSerializer::new));
-        public static final Recipes<GasCoolantRecipeSerializer> GAS_COOLANT = new Recipes<>(SERIALIZERS.register(GasCoolantRecipe.location(), GasCoolantRecipeSerializer::new));
+    public static class RecipeTypes {
+        private static final DeferredRegister<RecipeType<?>> TYPES = DeferredRegister.create(BuiltInRegistries.RECIPE_TYPE, Mekanism.MODID);
+        public static final DeferredHolder<RecipeType<?>, RecipeType<ChemicalToChemicalRecipe>> FISSION = TYPES.register("fission", () -> RecipeType.simple(Mekanism.rl("fission")));
+        public static final DeferredHolder<RecipeType<?>, RecipeType<FluidChemicalToChemicalRecipe>> FLUID_COOLANT = TYPES.register("fluid_coolant", () -> RecipeType.simple(Mekanism.rl("fluid_coolant")));
+        public static final DeferredHolder<RecipeType<?>, RecipeType<ChemicalToChemicalRecipe>> GAS_COOLANT = TYPES.register("gas_coolant", () -> RecipeType.simple(Mekanism.rl("gas_coolant")));
 
-        private static <T extends Recipe<?>> RegistryObject<RecipeType<T>> customType(ResourceLocation rl) {
-            return TYPES.register(rl.getPath(), () -> new RecipeType<T>() {
-                public String toString() {
-                    return rl.toString();
-                }
-            });
-        }
-        RegistryObject<RecipeType<Recipe<?>>> type;
-        RegistryObject<S> serializer;
-
-        private Recipes(RegistryObject<S> serializer) {
-            this.serializer = serializer;
-            this.type = customType(serializer.getId());
-        }
-
-        public S getSerializer() {
-            return serializer.get();
-        }
-
-        @SuppressWarnings("unchecked")
-        public <T extends RecipeType<?>> T getType() {
-            return (T) type.get();
-        }
-
-        public static void register(IEventBus bus) {
-            SERIALIZERS.register(bus);
+        private static void register(IEventBus bus) {
             TYPES.register(bus);
         }
     }
 
+    public static class RecipeSerializers {
+        private static final DeferredRegister<RecipeSerializer<?>> SERIALIZERS = DeferredRegister.create(BuiltInRegistries.RECIPE_SERIALIZER, Mekanism.MODID);
+        public static final DeferredHolder<RecipeSerializer<?>, FissionRecipeSerializer> FISSION = SERIALIZERS.register("fission", FissionRecipeSerializer::create);
+        public static final DeferredHolder<RecipeSerializer<?>, FluidCoolantRecipeSerializer> FLUID_COOLANT = SERIALIZERS.register("fluid_coolant", FluidCoolantRecipeSerializer::create);
+        public static final DeferredHolder<RecipeSerializer<?>, GasCoolantRecipeSerializer> GAS_COOLANT = SERIALIZERS.register("gas_coolant", GasCoolantRecipeSerializer::create);
+
+        private static void register(IEventBus bus) {
+            SERIALIZERS.register(bus);
+        }
+    }
 }

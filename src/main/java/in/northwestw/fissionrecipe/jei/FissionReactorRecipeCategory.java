@@ -83,7 +83,7 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionReac
         private final GasStack output;
 
         public FissionJEIRecipe(FissionRecipe recipe, GasStack output, List<FluidStack> inputs) {
-            super(recipe.getId(), recipe.getInput(), recipe.getOutputRepresentation(), recipe.getHeatObject());
+            super(recipe.getId(), recipe.getInput(), recipe.getOutputRepresentation(), recipe.getHeat());
             this.fluidCoolant = true;
             this.fluidInputs = inputs;
             this.gasInputs = null;
@@ -91,7 +91,7 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionReac
         }
 
         public FissionJEIRecipe(FissionRecipe recipe, List<GasStack> inputs, GasStack output) {
-            super(recipe.getId(), recipe.getInput(), recipe.getOutputRepresentation(), recipe.getHeatObject());
+            super(recipe.getId(), recipe.getInput(), recipe.getOutputRepresentation(), recipe.getHeat());
             this.fluidCoolant = false;
             this.fluidInputs = null;
             this.gasInputs = inputs;
