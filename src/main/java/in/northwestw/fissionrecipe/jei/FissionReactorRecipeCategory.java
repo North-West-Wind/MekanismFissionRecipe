@@ -1,15 +1,13 @@
 package in.northwestw.fissionrecipe.jei;
 
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
-import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
-import mekanism.client.jei.BaseRecipeCategory;
-import mekanism.client.jei.MekanismJEI;
+import mekanism.client.recipe_viewer.jei.BaseRecipeCategory;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils;
@@ -26,7 +24,6 @@ import in.northwestw.fissionrecipe.recipe.FluidCoolantRecipe;
 import in.northwestw.fissionrecipe.recipe.GasCoolantRecipe;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.compress.utils.Lists;
 
 import java.util.Arrays;
@@ -42,7 +39,7 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionReac
     private final GuiGauge<?> wasteTank;
 
     public FissionReactorRecipeCategory(IGuiHelper helper) {
-        super(helper, FissionRecipe.RECIPE_TYPE, GeneratorsLang.FISSION_REACTOR.translate(), createIcon(helper, iconRL), 6, 13, 182, 60);
+        super(helper, MekanismFission.RecipeTypes.FISSION.get(), GeneratorsLang.FISSION_REACTOR.translate(), createIcon(helper, iconRL), 6, 13, 182, 60);
         addElement(new GuiInnerScreen(this, 45, 17, 105, 56, () -> Arrays.asList(
                 MekanismLang.STATUS.translate(EnumColor.BRIGHT_GREEN, BooleanStateDisplay.ActiveDisabled.of(true)),
                 GeneratorsLang.GAS_BURN_RATE.translate(1.0),
@@ -74,53 +71,5 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionReac
         initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, fuelTank, recipe.getInput().getRepresentations());
         initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, heatedCoolantTank, Collections.singletonList(output));
         initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, wasteTank, Collections.singletonList(recipe.getOutputRepresentation()));
-    }
-
-    public static class FissionJEIRecipe extends FissionRecipe {
-        private final boolean fluidCoolant;
-        private final List<FluidStack> fluidInputs;
-        private final List<GasStack> gasInputs;
-        private final GasStack output;
-
-        public FissionJEIRecipe(FissionRecipe recipe, GasStack output, List<FluidStack> inputs) {
-            super(recipe.getId(), recipe.getInput(), recipe.getOutputRepresentation(), recipe.getHeat());
-            this.fluidCoolant = true;
-            this.fluidInputs = inputs;
-            this.gasInputs = null;
-            this.output = output;
-        }
-
-        public FissionJEIRecipe(FissionRecipe recipe, List<GasStack> inputs, GasStack output) {
-            super(recipe.getId(), recipe.getInput(), recipe.getOutputRepresentation(), recipe.getHeat());
-            this.fluidCoolant = false;
-            this.fluidInputs = null;
-            this.gasInputs = inputs;
-            this.output = output;
-        }
-
-        public boolean isFluidCoolant() {
-            return this.fluidCoolant;
-        }
-
-        public List<FluidStack> getFluidInputs() {
-            // If for some reason the input has negative amount, set it to 0
-            List<FluidStack> copy = Lists.newArrayList();
-            fluidInputs.forEach(stack -> {
-                if (stack.getAmount() < 0) {
-                    FluidStack stackCopy = stack;
-                    stackCopy.setAmount(0);
-                    copy.add(stackCopy);
-                } else copy.add(stack);
-            });
-            return copy;
-        }
-
-        public List<GasStack> getGasInputs() {
-            return gasInputs;
-        }
-
-        public GasStack getOutput() {
-            return output;
-        }
     }
 }

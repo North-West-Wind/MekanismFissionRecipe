@@ -72,7 +72,7 @@ dependencies {
 
     // meka dep
     implementation("mekanism:Mekanism:${minecraft_version}-${mekanism_version}")
-    implementation("mekanism:Mekanism:${minecraft_version}-${mekanism_version}-generators")
+    implementation("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:generators")
 }
 
 tasks.withType(ProcessResources).configureEach {

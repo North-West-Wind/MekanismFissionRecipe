@@ -12,7 +12,6 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import javax.script.ScriptException;
 
 public class FissionRecipe extends BasicChemicalToChemicalRecipe {
-    public static final String REGISTRY_NAME = "fission";
     private final Heat heat;
 
     public FissionRecipe(ChemicalStackIngredient input, ChemicalStack output, Heat heat) {
