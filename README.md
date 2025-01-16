@@ -1,5 +1,7 @@
 # Mekanism Fission Recipe
-A really unique addon for [Mekanism](https://www.curseforge.com/minecraft/mc-mods/mekanism) [Generators](https://www.curseforge.com/minecraft/mc-mods/mekanism-generators).
+A really unique addon for [Mekanism](https://modrinth.com/mod/mekanism) [Generators](https://modrinth.com/mod/mekanism-generators).
+
+This README is for `v3.0.6` for Minecraft `1.21.1` with NeoForge. For older versions, [see the README from other branches](https://github.com/North-West-Wind/MekanismFissionRecipe/branches).
 
 ## What?
 With this mod installed, you can add actual recipes for Mekanism's Fission Reactor. Below is an example of converting hydrogen to oxygen with the fission reactor that generates no heat:
@@ -8,6 +10,7 @@ With this mod installed, you can add actual recipes for Mekanism's Fission React
 ## How?
 This mod uses a dirty hack called [Mixins](https://github.com/SpongePowered/Mixin). It changes Mekanism's code at runtime. By creating a new recipe type and forcing the Fission Reactor to accept it, you can now add custom fission recipes to Mekanism.
 
+### Fission Recipe
 You just need to create the recipe like a datapack. Here's how the recipe JSON file should look like:
 ```json
 {
@@ -32,7 +35,7 @@ You just need to create the recipe like a datapack. Here's how the recipe JSON f
   - You can also use equations in this field with x as subject. For example, "x*x" will make burning 0.1mB of fuel generate 0.01 heat.
 
 With version 1.1.0, users can add coolant recipes. There are 2 types of coolant recipes:
-1. Fluid Coolant Recipe  
+### Fluid Coolant Recipe  
 For all fluid (like water) cooling, use this. The following is a sample JSON:
 ```json
 {
@@ -61,10 +64,7 @@ For all fluid (like water) cooling, use this. The following is a sample JSON:
 - Conductivity: Higher = Cooler
 - Efficiency: Higher = Boil more
 
-[This code snippet](https://github.com/North-West-Wind/MekanismFissionRecipe/blob/main/src/main/java/in/northwestw/fissionrecipe/mixin/MixinFissionReactorMultiblockData.java#L136-L144)
-is the relationship between thermal enthalpy, conductivity and efficiency.
-
-2. Gas Coolant Recipe  
+### Gas Coolant Recipe  
 For all chemical (like sodium) cooling, use this. The following is a sample JSON:
 ```json
 {
@@ -85,6 +85,9 @@ For all chemical (like sodium) cooling, use this. The following is a sample JSON
 - Input/Output: Refer to Fission Recipe.
 - Thermal Enthalpy & Conductivity: Refer to Fluid Coolant Recipe.
 
+[This code snippet](https://github.com/North-West-Wind/MekanismFissionRecipe/blob/main/src/main/java/in/northwestw/fissionrecipe/mixin/MixinFissionReactorMultiblockData.java#L136-L144)
+is the relationship between thermal enthalpy, conductivity and efficiency.
+
 ### For More Examples,
 Please take a look at the `test_recipes` directory.
 
@@ -96,4 +99,4 @@ If you find my projects great, you can support me on Ko-fi!
 [![An inkling girl drinking tea](https://files.catbox.moe/qlm7iq.png)](https://ko-fi.com/nww)
 
 ## License
-This mod is running under GNU GPLv3.
+This mod is published under GNU GPLv3.
