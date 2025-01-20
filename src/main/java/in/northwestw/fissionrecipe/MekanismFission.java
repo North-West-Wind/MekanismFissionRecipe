@@ -1,14 +1,10 @@
 package in.northwestw.fissionrecipe;
 
+import in.northwestw.fissionrecipe.recipe.*;
+import in.northwestw.fissionrecipe.recipe.serializer.*;
 import mekanism.api.recipes.ChemicalToChemicalRecipe;
 import mekanism.api.recipes.FluidChemicalToChemicalRecipe;
 import mekanism.common.Mekanism;
-import in.northwestw.fissionrecipe.recipe.FissionRecipe;
-import in.northwestw.fissionrecipe.recipe.FluidCoolantRecipe;
-import in.northwestw.fissionrecipe.recipe.GasCoolantRecipe;
-import in.northwestw.fissionrecipe.recipe.serializer.FissionRecipeSerializer;
-import in.northwestw.fissionrecipe.recipe.serializer.FluidCoolantRecipeSerializer;
-import in.northwestw.fissionrecipe.recipe.serializer.GasCoolantRecipeSerializer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
@@ -35,12 +31,19 @@ public class MekanismFission {
 
     public static class RecipeTypes {
         private static final DeferredRegister<RecipeType<?>> TYPES = DeferredRegister.create(BuiltInRegistries.RECIPE_TYPE, Mekanism.MODID);
-        public static final DeferredHolder<RecipeType<?>, RecipeType<ChemicalToChemicalRecipe>> FISSION = TYPES.register("fission", () -> RecipeType.simple(Mekanism.rl("fission")));
-        public static final DeferredHolder<RecipeType<?>, RecipeType<FluidCoolantRecipe>> FLUID_COOLANT = TYPES.register("fluid_coolant", () -> RecipeType.simple(Mekanism.rl("fluid_coolant")));
-        public static final DeferredHolder<RecipeType<?>, RecipeType<ChemicalToChemicalRecipe>> GAS_COOLANT = TYPES.register("gas_coolant", () -> RecipeType.simple(Mekanism.rl("gas_coolant")));
+        public static final DeferredHolder<RecipeType<?>, RecipeType<ChemicalToChemicalRecipe>> FISSION = TYPES.register("fission", simpleType("fission"));
+        public static final DeferredHolder<RecipeType<?>, RecipeType<FluidCoolantRecipe>> FLUID_COOLANT = TYPES.register("fluid_coolant", simpleType("fluid_coolant"));
+        public static final DeferredHolder<RecipeType<?>, RecipeType<ChemicalToChemicalRecipe>> GAS_COOLANT = TYPES.register("gas_coolant", simpleType("gas_coolant"));
+
+        public static final DeferredHolder<RecipeType<?>, RecipeType<BoilerRecipe>> BOILER = TYPES.register("boiler", simpleType("boiler"));
+        public static final DeferredHolder<RecipeType<?>, RecipeType<ChemicalToChemicalRecipe>> HEATED_COOLANT = TYPES.register("heated_coolant", simpleType("heated_coolant"));
 
         private static void register(IEventBus bus) {
             TYPES.register(bus);
+        }
+
+        private static <T extends Recipe<?>> Supplier<RecipeType<T>> simpleType(String name) {
+            return () -> RecipeType.simple(Mekanism.rl(name));
         }
     }
 
@@ -49,6 +52,9 @@ public class MekanismFission {
         public static final DeferredHolder<RecipeSerializer<?>, FissionRecipeSerializer> FISSION = SERIALIZERS.register("fission", FissionRecipeSerializer::create);
         public static final DeferredHolder<RecipeSerializer<?>, FluidCoolantRecipeSerializer> FLUID_COOLANT = SERIALIZERS.register("fluid_coolant", FluidCoolantRecipeSerializer::create);
         public static final DeferredHolder<RecipeSerializer<?>, GasCoolantRecipeSerializer> GAS_COOLANT = SERIALIZERS.register("gas_coolant", GasCoolantRecipeSerializer::create);
+
+        public static final DeferredHolder<RecipeSerializer<?>, BoilerRecipeSerializer> BOILER = SERIALIZERS.register("boiler", BoilerRecipeSerializer::new);
+        public static final DeferredHolder<RecipeSerializer<?>, HeatedCoolantRecipeSerializer> HEATED_COOLANT = SERIALIZERS.register("heated_coolant", HeatedCoolantRecipeSerializer::new);
 
         private static void register(IEventBus bus) {
             SERIALIZERS.register(bus);

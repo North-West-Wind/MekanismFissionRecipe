@@ -1,15 +1,14 @@
 package in.northwestw.fissionrecipe.recipe;
 
+import in.northwestw.fissionrecipe.MekanismFission;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
-import in.northwestw.fissionrecipe.MekanismFission;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 
-public class FluidCoolantRecipe extends FluidToChemicalRecipe {
-    private final double thermalEnthalpy,  conductivity, efficiency;
-
-    public FluidCoolantRecipe(FluidStackIngredient input, ChemicalStack output, double thermalEnthalpy, double conductivity, double efficiency) {
+public class BoilerRecipe extends FluidToChemicalRecipe {
+    private final double thermalEnthalpy, conductivity, efficiency;
+    public BoilerRecipe(FluidStackIngredient input, ChemicalStack output, double thermalEnthalpy, double conductivity, double efficiency) {
         super(input, output);
         this.thermalEnthalpy = thermalEnthalpy;
         this.conductivity = conductivity;
@@ -17,13 +16,13 @@ public class FluidCoolantRecipe extends FluidToChemicalRecipe {
     }
 
     @Override
-    public RecipeSerializer<? extends FluidToChemicalRecipe> getSerializer() {
-        return MekanismFission.RecipeSerializers.FLUID_COOLANT.get();
+    public RecipeType<? extends FluidToChemicalRecipe> getType() {
+        return MekanismFission.RecipeTypes.BOILER.get();
     }
 
     @Override
-    public RecipeType<? extends FluidToChemicalRecipe> getType() {
-        return MekanismFission.RecipeTypes.FLUID_COOLANT.get();
+    public RecipeSerializer<? extends FluidToChemicalRecipe> getSerializer() {
+        return MekanismFission.RecipeSerializers.BOILER.value();
     }
 
     public double getThermalEnthalpy() {
