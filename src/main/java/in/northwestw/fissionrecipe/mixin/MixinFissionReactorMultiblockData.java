@@ -126,6 +126,8 @@ public abstract class MixinFissionReactorMultiblockData extends MixinMultiblockD
             case EMPTY -> lastBoilRate = 0;
             case FLUID -> {
                 IExtendedFluidTank fluidCoolantTank = this.coolantTank.getFluidTank();
+                if (fluidCoolantRecipe != null && !fluidCoolantRecipe.test(fluidCoolantTank.getFluid()))
+                    fluidCoolantRecipe = null;
                 if (fluidCoolantRecipe == null) {
                     fluidCoolantRecipe = serverFluidCoolantRecipes(this.getLevel().getServer()).stream().filter(r -> r.getInput().testType(fluidCoolantTank.getFluid())).findFirst().orElse(null);
                     if (fluidCoolantRecipe == null) {
@@ -148,6 +150,8 @@ public abstract class MixinFissionReactorMultiblockData extends MixinMultiblockD
             }
             case CHEMICAL -> {
                 IChemicalTank chemicalCoolantTank = coolantTank.getChemicalTank();
+                if (gasCoolantRecipe != null && !gasCoolantRecipe.test(chemicalCoolantTank.getStack()))
+                    gasCoolantRecipe = null;
                 if (gasCoolantRecipe == null) {
                     gasCoolantRecipe = serverGasCoolantRecipes(this.getLevel().getServer()).stream().filter(r -> r.getInput().testType(chemicalCoolantTank.getStack())).findFirst().orElse(null);
                     if (gasCoolantRecipe == null) {
@@ -176,6 +180,8 @@ public abstract class MixinFissionReactorMultiblockData extends MixinMultiblockD
     @Overwrite
     private void burnFuel(Level world) {
         // get fission recipe by input
+        if (fissionRecipe != null && !fissionRecipe.test(this.fuelTank.getStack()))
+            fissionRecipe = null;
         if (fissionRecipe == null) {
             fissionRecipe = serverFissionRecipes(this.getLevel().getServer()).stream().filter(r -> r.getInput().testType(this.fuelTank.getType())).findFirst().orElse(null);
             if (fissionRecipe == null) return;
