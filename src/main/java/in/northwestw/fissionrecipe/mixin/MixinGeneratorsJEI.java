@@ -2,7 +2,7 @@ package in.northwestw.fissionrecipe.mixin;
 
 import com.google.common.collect.Lists;
 import in.northwestw.fissionrecipe.jei.FissionJEIRecipe;
-import in.northwestw.fissionrecipe.jei.FissionRecipeViewType;
+import in.northwestw.fissionrecipe.jei.RecipeViewerRecipeTypes;
 import mekanism.api.recipes.ChemicalToChemicalRecipe;
 import mekanism.client.recipe_viewer.jei.CatalystRegistryHelper;
 import mekanism.client.recipe_viewer.jei.RecipeRegistryHelper;
@@ -33,10 +33,9 @@ public class MixinGeneratorsJEI {
     public void registerFissionRecipes(IRecipeRegistration registry, CallbackInfo ci) {
         List<FissionJEIRecipe> completedRecipes = Lists.newArrayList();
         List<RecipeHolder<ChemicalToChemicalRecipe>> recipes = getFissionRecipes();
-        MekanismFission.LOGGER.debug("Mixin iterating through {} fission recipes", recipes.size());
-        for (FluidCoolantRecipe recipe : FissionReactorRecipeCategory.getFluidCoolants()) completedRecipes.addAll(recipes.stream().map(r -> new FissionJEIRecipe(r.id(), (FissionRecipe) r.value(), recipe.getOutputRepresentation(), recipe.getInput().getRepresentations())).toList());
-        for (GasCoolantRecipe recipe : FissionReactorRecipeCategory.getGasCoolants()) completedRecipes.addAll(recipes.stream().map(r -> new FissionJEIRecipe(r.id(), (FissionRecipe) r.value(), recipe.getInput().getRepresentations(), recipe.getOutputRaw())).toList());
-        RecipeRegistryHelper.register(registry, FissionRecipeViewType.FISSION, completedRecipes);
+        for (FluidCoolantRecipe recipe : getFluidCoolantRecipes()) completedRecipes.addAll(recipes.stream().map(r -> new FissionJEIRecipe(r.id(), (FissionRecipe) r.value(), recipe.getOutputRepresentation(), recipe.getInput().getRepresentations())).toList());
+        for (GasCoolantRecipe recipe : getGasCoolantRecipes()) completedRecipes.addAll(recipes.stream().map(r -> new FissionJEIRecipe(r.id(), (FissionRecipe) r.value(), recipe.getInput().getRepresentations(), recipe.getOutputRaw())).toList());
+        RecipeRegistryHelper.register(registry, RecipeViewerRecipeTypes.FISSION, completedRecipes);
         ci.cancel();
     }
 
@@ -49,12 +48,22 @@ public class MixinGeneratorsJEI {
 
     @Inject(method = "registerRecipeCatalysts", at = @At(value = "INVOKE", target = "Lmekanism/client/recipe_viewer/jei/CatalystRegistryHelper;register(Lmezz/jei/api/registration/IRecipeCatalystRegistration;[Lmekanism/client/recipe_viewer/type/IRecipeViewerRecipeType;)V"), cancellable = true)
     public void registerFissionCatalysts(IRecipeCatalystRegistration registry, CallbackInfo ci) {
-        CatalystRegistryHelper.register(registry, FissionRecipeViewType.FISSION);
+        CatalystRegistryHelper.register(registry, RecipeViewerRecipeTypes.FISSION);
         ci.cancel();
     }
 
     @Unique
     private static List<RecipeHolder<ChemicalToChemicalRecipe>> getFissionRecipes() {
         return Minecraft.getInstance().getConnection().getRecipeManager().getAllRecipesFor(MekanismFission.RecipeTypes.FISSION.get());
+    }
+
+    @Unique
+    private static List<FluidCoolantRecipe> getFluidCoolantRecipes() {
+        return Minecraft.getInstance().getConnection().getRecipeManager().getAllRecipesFor(MekanismFission.RecipeTypes.FLUID_COOLANT.get()).stream().map(RecipeHolder::value).toList();
+    }
+
+    @Unique
+    private static List<GasCoolantRecipe> getGasCoolantRecipes() {
+        return Minecraft.getInstance().getConnection().getRecipeManager().getAllRecipesFor(MekanismFission.RecipeTypes.GAS_COOLANT.get()).stream().map(holder -> (GasCoolantRecipe) holder.value()).toList();
     }
 }

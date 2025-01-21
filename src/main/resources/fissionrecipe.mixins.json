@@ -1,15 +1,17 @@
 {
   "required": true,
   "package": "in.northwestw.fissionrecipe.mixin",
-  "compatibilityLevel": "JAVA_17",
+  "compatibilityLevel": "JAVA_21",
   "refmap": "fissionrecipe.refmap.json",
   "mixins": [
     "MixinFissionReactorMultiblockData",
+    "MixinMekanismJEI",
     "MixinMultiblockData"
   ],
   "client": [
     "MixinGeneratorsJEI",
-    "MixinGuiFissionReactor"
+    "MixinGuiFissionReactor",
+    "MixinGuiThermoelectricBoiler"
   ],
   "minVersion": "0.8"
 }

@@ -1,0 +1,14 @@
+{
+  "type": "mekanism:heated_coolant",
+  "input": {
+    "chemical": "mekanism:superheated_sodium",
+    "amount": 1
+  },
+  "output": {
+    "id": "mekanism:sodium",
+    "amount": 1
+  },
+  "thermalEnthalpy": 5,
+  "efficiency": 0.4,
+  "temperature": 100000
+}
